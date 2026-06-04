@@ -1,0 +1,8 @@
+evidence/nsight/*.sqlite
+evidence/nsight/*.nsys-rep
+evidence/model/full_download.log
+evidence/runtime/*.log
+evidence/video/
+*.pyc
+__pycache__/
+.ray/

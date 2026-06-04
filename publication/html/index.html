@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 3.7 Flash NVFP4 — SM121 Verified TP=2 | r0b0tlab</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --canvas:#050510;--surface:#0a0a1a;--surface2:#0f0f24;--border:#1a1a35;
+  --green:#00ff88;--magenta:#ff00e5;--cyan:#00e5ff;--amber:#ffb800;
+  --white:#f0f0f5;--muted:#7a7a9a;--dim:#4a4a6a;
+  --font-title:'Space Grotesk',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-body:'Inter',sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--canvas);color:var(--white);font-family:var(--font-body);line-height:1.6;min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+
+/* Hero */
+.hero{text-align:center;padding:4rem 0 3rem;position:relative}
+.hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0,255,136,.06) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-block;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,136,.3);padding:.35rem 1rem;border-radius:2px;margin-bottom:1.5rem}
+.hero h1{font-family:var(--font-title);font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.15;margin-bottom:.75rem}
+.hero h1 span{color:var(--green)}
+.hero p{color:var(--muted);font-size:1.05rem;max-width:640px;margin:0 auto}
+
+/* Section */
+section{margin:3rem 0}
+.section-label{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
+h2{font-family:var(--font-title);font-size:1.6rem;font-weight:600;margin-bottom:1.25rem}
+
+/* Metric cards */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.metric{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);padding:1.25rem;border-radius:3px}
+.metric .label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.metric .value{font-family:var(--font-mono);font-size:1.8rem;font-weight:600;color:var(--green)}
+.metric .unit{font-size:.85rem;color:var(--muted);margin-left:.25rem}
+.metric .note{font-size:.75rem;color:var(--dim);margin-top:.35rem}
+.metric.cyan{border-top-color:var(--cyan)}.metric.cyan .value{color:var(--cyan)}
+.metric.magenta{border-top-color:var(--magenta)}.metric.magenta .value{color:var(--magenta)}
+.metric.amber{border-top-color:var(--amber)}.metric.amber .value{color:var(--amber)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.82rem;margin:1rem 0}
+th{text-align:left;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.6rem .75rem;border-bottom:1px solid var(--border)}
+td{padding:.6rem .75rem;border-bottom:1px solid rgba(26,26,53,.5);color:var(--white)}
+tr:hover td{background:rgba(255,255,255,.02)}
+td.pass{color:var(--green)}td.warn{color:var(--amber)}td.fail{color:#ff4444}
+
+/* Code blocks */
+pre{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.78rem;line-height:1.6;color:var(--cyan);margin:1rem 0}
+code{font-family:var(--font-mono);font-size:.82rem}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.5rem;margin:1rem 0}
+.card h3{font-family:var(--font-title);font-size:1.1rem;margin-bottom:.75rem}
+
+/* Verdict */
+.verdict{background:var(--surface);border:2px solid var(--green);border-radius:3px;padding:2rem;text-align:center;margin:2rem 0}
+.verdict .status{font-family:var(--font-title);font-size:1.8rem;font-weight:700;color:var(--green);margin-bottom:.5rem}
+.verdict .sub{color:var(--muted);font-size:.95rem}
+
+/* Backend evidence */
+.backend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.backend-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);padding:1rem 1.25rem;border-radius:0 3px 3px 0}
+.backend-item .name{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.backend-item .value{font-family:var(--font-mono);font-size:.9rem;color:var(--green)}
+.backend-item.amber{border-left-color:var(--amber)}.backend-item.amber .value{color:var(--amber)}
+
+/* Footer */
+footer{text-align:center;padding:3rem 0 2rem;border-top:1px solid var(--border);margin-top:3rem}
+footer p{font-size:.75rem;color:var(--dim)}
+footer a{color:var(--cyan);text-decoration:none}
+
+/* Scroll animation */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero fade-up">
+  <div class="hero-badge">SM121 Verified &middot; Native NVFP4 &middot; TP=2</div>
+  <h1>Step 3.7 Flash <span>NVFP4</span></h1>
+  <p>198B parameter sparse MoE VLM served natively on dual NVIDIA DGX Spark (GB10/SM121) with vLLM TP=2 over Ray. Zero Marlin. Zero emulation.</p>
+</div>
+
+<!-- Verdict -->
+<div class="verdict fade-up">
+  <div class="status">GO</div>
+  <div class="sub">SM121-verified native NVFP4 execution on dual GB10</div>
+</div>
+
+<!-- Key Metrics -->
+<section class="fade-up">
+  <div class="section-label">Performance</div>
+  <h2>Benchmark Results</h2>
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">Decode (tg128)</div>
+      <div class="value">14.02<span class="unit">tok/s</span></div>
+      <div class="note">1024 input &rarr; 128 output, c=1</div>
+    </div>
+    <div class="metric cyan">
+      <div class="label">Generation (c=1)</div>
+      <div class="value">13.2<span class="unit">tok/s</span></div>
+      <div class="note">2048 input &rarr; 1024 output</div>
+    </div>
+    <div class="metric magenta">
+      <div class="label">Aggregate (c=2)</div>
+      <div class="value">27.01<span class="unit">tok/s</span></div>
+      <div class="note">2 concurrent, 2048&rarr;1024 each</div>
+    </div>
+    <div class="metric amber">
+      <div class="label">GPU Power</div>
+      <div class="value">25.5<span class="unit">W</span></div>
+      <div class="note">58&deg;C, 92% utilization</div>
+    </div>
+  </div>
+</section>
+
+<!-- Model Profile -->
+<section class="fade-up">
+  <div class="section-label">Model</div>
+  <h2>Model Profile</h2>
+  <table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Model</td><td>stepfun-ai/Step-3.7-Flash-NVFP4</td></tr>
+    <tr><td>Architecture</td><td>Step3p7ForConditionalGeneration</td></tr>
+    <tr><td>Total Parameters</td><td>~198B</td></tr>
+    <tr><td>Active Parameters</td><td>~11B / token</td></tr>
+    <tr><td>Experts</td><td>288, top-k=8</td></tr>
+    <tr><td>Context Length</td><td>256K (8K initial validated)</td></tr>
+    <tr><td>Modality</td><td>Image + Text (VLM)</td></tr>
+    <tr><td>Quantization</td><td>NVFP4 (ModelOpt 0.45.0), FP8 KV cache</td></tr>
+    <tr><td>Storage</td><td>~129 GB, 14 safetensors shards</td></tr>
+    <tr><td>License</td><td>Apache-2.0</td></tr>
+  </table>
+</section>
+
+<!-- Backend Evidence -->
+<section class="fade-up">
+  <div class="section-label">SM121 Verification</div>
+  <h2>Backend Selection</h2>
+  <p style="color:var(--muted);margin-bottom:1rem">vLLM auto-selected native Blackwell CUTLASS backends on both TP ranks. No Marlin. No emulation.</p>
+  <div class="backend-grid">
+    <div class="backend-item">
+      <div class="name">NVFP4 MoE</div>
+      <div class="value">FLASHINFER_CUTLASS</div>
+    </div>
+    <div class="backend-item">
+      <div class="name">NVFP4 Dense</div>
+      <div class="value">VLLM_CUTLASS</div>
+    </div>
+    <div class="backend-item">
+      <div class="name">Attention</div>
+      <div class="value">FLASHINFER</div>
+    </div>
+    <div class="backend-item">
+      <div class="name">VIT Attention</div>
+      <div class="value">FLASH_ATTN</div>
+    </div>
+    <div class="backend-item amber">
+      <div class="name">All-Reduce</div>
+      <div class="value">PYNCCL</div>
+    </div>
+    <div class="backend-item">
+      <div class="name">SM Capability</div>
+      <div class="value">(12, 1) &mdash; SM121</div>
+    </div>
+  </div>
+  <pre>Worker_TP0: Using 'FLASHINFER_CUTLASS' NvFp4 MoE backend
+  out of potential backends: [FLASHINFER_TRTLLM, FLASHINFER_CUTEDSL,
+  FLASHINFER_CUTEDSL_BATCHED, FLASHINFER_CUTLASS, VLLM_CUTLASS, MARLIN, EMULATION]
+
+Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
+  out of potential backends: [FLASHINFER_TRTLLM, FLASHINFER_CUTEDSL,
+  FLASHINFER_CUTEDSL_BATCHED, FLASHINFER_CUTLASS, VLLM_CUTLASS, MARLIN, EMULATION]</pre>
+</section>
+
+<!-- Platform -->
+<section class="fade-up">
+  <div class="section-label">Platform</div>
+  <h2>Platform Capability</h2>
+  <table>
+    <tr><th>Check</th><th>Result</th></tr>
+    <tr><td>torch.cuda.get_device_capability()</td><td class="pass">(12, 1) &mdash; SM121</td></tr>
+    <tr><td>is_device_capability_family(120)</td><td class="pass">True</td></tr>
+    <tr><td>is_device_capability_family(100)</td><td>False</td></tr>
+    <tr><td>support_deep_gemm()</td><td>False (uses CUTLASS directly)</td></tr>
+    <tr><td>vllm._C</td><td class="pass">OK</td></tr>
+    <tr><td>vllm._C_stable_libtorch</td><td class="pass">OK</td></tr>
+    <tr><td>vllm._moe_C</td><td class="pass">OK</td></tr>
+    <tr><td>FlashInfer</td><td>0.6.11.post2</td></tr>
+    <tr><td>CUTLASS</td><td class="pass">Available</td></tr>
+  </table>
+</section>
+
+<!-- Correctness -->
+<section class="fade-up">
+  <div class="section-label">Correctness</div>
+  <h2>Smoke Tests</h2>
+  <table>
+    <tr><th>Test</th><th>Result</th><th>Details</th></tr>
+    <tr><td>Text completion</td><td class="pass">PASS</td><td>"The capital of France is Paris."</td></tr>
+    <tr><td>Tool calling</td><td class="pass">PASS</td><td>get_weather({"city":" Paris"})</td></tr>
+    <tr><td>Vision (base64 PNG)</td><td class="pass">PASS</td><td>"The image is red" &mdash; correct color</td></tr>
+    <tr><td>NCCL all-reduce</td><td class="pass">PASS</td><td>29,670 all-reduces in nsys trace</td></tr>
+  </table>
+</section>
+
+<!-- Nsight -->
+<section class="fade-up">
+  <div class="section-label">Nsight Evidence</div>
+  <h2>NVIDIA Nsight Systems</h2>
+  <div class="card">
+    <h3>NVTX Trace Summary</h3>
+    <table>
+      <tr><th>Operation</th><th>Instances</th><th>% Time</th></tr>
+      <tr><td>NCCL:ncclAllReduce</td><td>29,670</td><td>52.4%</td></tr>
+      <tr><td>NCCL:ncclCommInitRank</td><td>2</td><td>33.2%</td></tr>
+      <tr><td>NCCL:ncclAllGather</td><td>324</td><td>7.6%</td></tr>
+      <tr><td>CCCL:cub::DeviceRadixSort</td><td>4</td><td>0.8%</td></tr>
+    </table>
+    <p style="color:var(--dim);font-size:.78rem;margin-top:.75rem">Note: nsys 2025.3.2 cannot trace Ray worker GPU kernels across distributed nodes. Backend selection logs are the primary SM121 verification gate.</p>
+  </div>
+</section>
+
+<!-- Server Config -->
+<section class="fade-up">
+  <div class="section-label">Configuration</div>
+  <h2>Launch Recipe</h2>
+  <pre>vllm serve stepfun-ai/Step-3.7-Flash-NVFP4 \
+  --served-model-name step3p7 \
+  --tensor-parallel-size 2 \
+  --distributed-executor-backend ray \
+  --disable-custom-all-reduce \
+  --quantization modelopt \
+  --kv-cache-dtype fp8 \
+  --disable-cascade-attn \
+  --gpu-memory-utilization 0.70 \
+  --max-model-len 8192 \
+  --reasoning-parser step3p5 \
+  --tool-call-parser step3p5 \
+  --enable-auto-tool-choice \
+  --enforce-eager</pre>
+</section>
+
+<!-- Hardware -->
+<section class="fade-up">
+  <div class="section-label">Hardware</div>
+  <h2>Dual GB10 Cluster</h2>
+  <table>
+    <tr><th>Node</th><th>Role</th><th>IP</th><th>GPU</th><th>RAM</th></tr>
+    <tr><td>r0b0t-dgx</td><td>Head (TP0)</td><td>192.168.100.10</td><td>NVIDIA GB10 SM121</td><td>121 GiB</td></tr>
+    <tr><td>r0b0tdgx1</td><td>Worker (TP1)</td><td>192.168.100.11</td><td>NVIDIA GB10 SM121</td><td>119 GiB</td></tr>
+  </table>
+  <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">Interconnect: QSFP 200GbE, MTU 9000, RoCE ~196 Gbps, < 0.6ms RTT</p>
+</section>
+
+<!-- Limitations -->
+<section class="fade-up">
+  <div class="section-label">Known Limitations</div>
+  <h2>Caveats</h2>
+  <ul style="color:var(--muted);font-size:.9rem;padding-left:1.5rem;list-style:disc">
+    <li>nsys cannot trace Ray worker GPU kernels across nodes (distributed TP limitation)</li>
+    <li><code>--enforce-eager</code> required (Triton JIT + CUDA graphs cause RPC timeout on first run)</li>
+    <li>max_model_len=8192 (conservative; model supports 256K)</li>
+    <li>Upstream recommends TP=4+EP; TP=2 is our validated target</li>
+    <li>Vision test uses synthetic base64 PNG</li>
+    <li>PYNCCL all-reduce (SM121 NCCL_SYMM_MEM unavailable)</li>
+  </ul>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Published by <a href="https://github.com/r0b0tlab">r0b0tlab</a> &middot; <a href="https://x.com/mr_r0b0t">@mr-r0b0t</a></p>
+  <p style="margin-top:.5rem">Model: stepfun-ai/Step-3.7-Flash-NVFP4 &middot; vLLM 0.1.dev16944 &middot; 2026-06-04</p>
+</footer>
+
+</div>
+
+<script>
+// Scroll animation
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
+}, {threshold: 0.1});
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

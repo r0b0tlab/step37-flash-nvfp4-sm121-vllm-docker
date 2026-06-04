@@ -1,0 +1,14 @@
+# Ray worker version mismatch evidence
+
+## Command
+ssh gn100-89ac "/home/r0b0tdgx/vllm-gb10/.venv/bin/ray start --address=192.168.100.10:6379 --node-ip-address=192.168.100.11 --disable-usage-stats"
+
+## Result summary
+Local Ray worker on gn100-89ac failed due to Python version mismatch.
+
+## Observed versions
+- Head Ray Python: 3.12.13
+- Worker local Python: 3.12.3
+
+## Current workaround
+Run the Ray worker on gn100-89ac inside a Docker container with the same Ray+Python runtime used on the Ray head.

@@ -1,0 +1,15 @@
+NOTICE: Existing SQLite export found: /work/evidence/nsight/step37_tp2_full_trace.sqlite
+        It is assumed file was previously exported from: /work/evidence/nsight/step37_tp2_full_trace.nsys-rep
+        Consider using --force-export=true if needed.
+
+Processing [/work/evidence/nsight/step37_tp2_full_trace.sqlite] with [/opt/nvidia/nsight-systems/2025.3.2/host-linux-armv8/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)               Name             
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ------------------------------
+     96.6           205216       1008     203.6     160.0        32      8064        378.5  cuGetProcAddress_v2           
+      2.5             5408          2    2704.0    2704.0      2640      2768         90.5  cuInit                        
+      0.6             1280          2     640.0     640.0       528       752        158.4  cuModuleGetLoadingMode        
+      0.2              512          4     128.0     120.0       112       160         22.6  cudaGetDeviceProperties_v12000
+

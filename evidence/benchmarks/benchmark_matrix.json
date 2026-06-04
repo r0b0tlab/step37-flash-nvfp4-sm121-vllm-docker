@@ -1,0 +1,97 @@
+{
+  "model": "Step-3.7-Flash-NVFP4",
+  "tp": 2,
+  "gpu": "92 %, [N/A], 58, 25.48 W",
+  "benchmarks": [
+    {
+      "name": "tg128_c1",
+      "input": 1024,
+      "output": 128,
+      "c": 1,
+      "runs": [
+        {
+          "prompt_tokens": 618,
+          "completion_tokens": 128,
+          "wall_time_s": 8.914,
+          "tok_s": 14.36
+        },
+        {
+          "prompt_tokens": 618,
+          "completion_tokens": 128,
+          "wall_time_s": 8.81,
+          "tok_s": 14.53
+        },
+        {
+          "prompt_tokens": 618,
+          "completion_tokens": 128,
+          "wall_time_s": 9.716,
+          "tok_s": 13.17
+        }
+      ],
+      "mean_tok_s": 14.02
+    },
+    {
+      "name": "random_c1",
+      "input": 2048,
+      "output": 1024,
+      "c": 1,
+      "runs": [
+        {
+          "prompt_tokens": 1233,
+          "completion_tokens": 1024,
+          "wall_time_s": 79.668,
+          "tok_s": 12.85
+        },
+        {
+          "prompt_tokens": 1233,
+          "completion_tokens": 1024,
+          "wall_time_s": 77.053,
+          "tok_s": 13.29
+        },
+        {
+          "prompt_tokens": 1233,
+          "completion_tokens": 1024,
+          "wall_time_s": 76.158,
+          "tok_s": 13.45
+        }
+      ],
+      "mean_tok_s": 13.2
+    },
+    {
+      "name": "random_c2",
+      "input": 2048,
+      "output": 1024,
+      "c": 2,
+      "runs": [
+        {
+          "total_tok": 2048,
+          "wall_s": 74.358,
+          "agg_tok_s": 27.54,
+          "per_req_tok_s": [
+            13.77,
+            13.77
+          ]
+        },
+        {
+          "total_tok": 2048,
+          "wall_s": 75.029,
+          "agg_tok_s": 27.3,
+          "per_req_tok_s": [
+            13.65,
+            13.65
+          ]
+        },
+        {
+          "total_tok": 2048,
+          "wall_s": 78.196,
+          "agg_tok_s": 26.19,
+          "per_req_tok_s": [
+            13.1,
+            13.1
+          ]
+        }
+      ],
+      "mean_agg_tok_s": 27.01
+    }
+  ]
+}

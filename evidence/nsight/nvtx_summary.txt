@@ -1,0 +1,17 @@
+
+NOTICE: Existing SQLite export found: /work/evidence/nsight/step37_tp2_full_trace.sqlite
+        It is assumed file was previously exported from: /work/evidence/nsight/step37_tp2_full_trace.nsys-rep
+        Consider using --force-export=true if needed.
+
+Processing [/work/evidence/nsight/step37_tp2_full_trace.sqlite] with [/opt/nvidia/nsight-systems/2025.3.2/host-linux-armv8/reports/nvtx_sum.py]... 
+
+ ** NVTX Range Summary (nvtx_sum):
+
+ Time (%)  Total Time (ns)  Instances   Avg (ns)     Med (ns)    Min (ns)  Max (ns)   StdDev (ns)   Style              Range           
+ --------  ---------------  ---------  -----------  -----------  --------  ---------  -----------  -------  ---------------------------
+     52.4        644357008      29670      21717.5      10048.0      5664   83702928     654915.1  PushPop  NCCL:ncclAllReduce         
+     33.2        407654112          2  203827056.0  203827056.0  10540832  397113280  273347999.4  PushPop  NCCL:ncclCommInitRank      
+      7.6         93743824        324     289332.8      33552.0     19600   82162192    4562589.7  PushPop  NCCL:ncclAllGather         
+      6.0         74075984          1   74075984.0   74075984.0  74075984   74075984          0.0  PushPop  NCCL:ncclCommInitRankConfig
+      0.8          9460832          4    2365208.0     228856.0     21152    8981968    4413847.9  PushPop  CCCL:cub::DeviceRadixSort  
+
