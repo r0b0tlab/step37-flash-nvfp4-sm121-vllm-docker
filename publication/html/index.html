@@ -1,248 +1,309 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Step 3.7 Flash NVFP4 — SM121 Verified TP=2 | r0b0tlab</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --canvas:#050510;--surface:#0a0a1a;--surface2:#0f0f24;--border:#1a1a35;
-  --green:#00ff88;--magenta:#ff00e5;--cyan:#00e5ff;--amber:#ffb800;
-  --white:#f0f0f5;--muted:#7a7a9a;--dim:#4a4a6a;
-  --font-title:'Space Grotesk',sans-serif;--font-mono:'JetBrains Mono',monospace;--font-body:'Inter',sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap');
+:root{--bg:#050510;--green:#00ff88;--mag:#ff00e5;--cyan:#00e5ff;--amber:#ffb800;--white:#f0f0f5;--muted:#7a7a9a;--dim:#4a4a6a;--surface:#0a0a1a;--border:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  margin:0;
+  background:radial-gradient(circle at 20% 0%,#063 0,#050510 42%);
+  color:var(--white);
+  font-family:Inter,sans-serif;
+  line-height:1.6;
 }
-html{font-size:16px;scroll-behavior:smooth}
-body{background:var(--canvas);color:var(--white);font-family:var(--font-body);line-height:1.6;min-height:100vh}
-.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+main{max-width:1180px;margin:auto;padding:36px 22px 80px}
+h1,h2{font-family:'Space Grotesk',sans-serif}
+h1{font-size:clamp(40px,7vw,82px);line-height:.94;margin-bottom:16px}
+h2{font-size:1.6rem;font-weight:700;margin:48px 0 20px}
+.hero,.card{
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:rgba(255,255,255,.035);
+  padding:28px;
+  box-shadow:0 0 70px rgba(0,255,136,.06);
+}
+.hero{margin-bottom:36px}
+.hero-sub{color:var(--muted);font-size:1.05rem;max-width:680px;margin-bottom:20px}
+.metric{
+  font:900 clamp(36px,6vw,56px) 'JetBrains Mono',monospace;
+  color:var(--green);
+  margin:8px 0;
+}
+.metric-label{font:700 13px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.badge{
+  display:inline-block;
+  font:700 11px 'JetBrains Mono',monospace;
+  color:var(--green);
+  border:1px solid rgba(0,255,136,.35);
+  padding:4px 14px;
+  border-radius:4px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:16px;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+.muted{color:var(--muted)}
+.dim{color:var(--dim)}
 
-/* Hero */
-.hero{text-align:center;padding:4rem 0 3rem;position:relative}
-.hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(0,255,136,.06) 0%,transparent 70%);pointer-events:none}
-.hero-badge{display:inline-block;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,136,.3);padding:.35rem 1rem;border-radius:2px;margin-bottom:1.5rem}
-.hero h1{font-family:var(--font-title);font-size:clamp(2rem,5vw,3.2rem);font-weight:700;line-height:1.15;margin-bottom:.75rem}
-.hero h1 span{color:var(--green)}
-.hero p{color:var(--muted);font-size:1.05rem;max-width:640px;margin:0 auto}
-
-/* Section */
-section{margin:3rem 0}
-.section-label{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem}
-h2{font-family:var(--font-title);font-size:1.6rem;font-weight:600;margin-bottom:1.25rem}
-
-/* Metric cards */
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
-.metric{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);padding:1.25rem;border-radius:3px}
-.metric .label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.metric .value{font-family:var(--font-mono);font-size:1.8rem;font-weight:600;color:var(--green)}
-.metric .unit{font-size:.85rem;color:var(--muted);margin-left:.25rem}
-.metric .note{font-size:.75rem;color:var(--dim);margin-top:.35rem}
-.metric.cyan{border-top-color:var(--cyan)}.metric.cyan .value{color:var(--cyan)}
-.metric.magenta{border-top-color:var(--magenta)}.metric.magenta .value{color:var(--magenta)}
-.metric.amber{border-top-color:var(--amber)}.metric.amber .value{color:var(--amber)}
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:20px 0}
+.mini-card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  padding:20px;
+  border-top:3px solid var(--green);
+}
+.mini-card.cyan{border-top-color:var(--cyan)}
+.mini-card.cyan .val{color:var(--cyan)}
+.mini-card.mag{border-top-color:var(--mag)}
+.mini-card.mag .val{color:var(--mag)}
+.mini-card.amber{border-top-color:var(--amber)}
+.mini-card.amber .val{color:var(--amber)}
+.mini-card .lab{font:700 10px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.mini-card .val{font:900 32px 'JetBrains Mono',monospace;color:var(--green)}
+.mini-card .unit{font:400 14px 'JetBrains Mono',monospace;color:var(--muted);margin-left:4px}
+.mini-card .note{font:400 12px Inter,sans-serif;color:var(--dim);margin-top:6px}
 
 /* Tables */
-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.82rem;margin:1rem 0}
-th{text-align:left;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.6rem .75rem;border-bottom:1px solid var(--border)}
-td{padding:.6rem .75rem;border-bottom:1px solid rgba(26,26,53,.5);color:var(--white)}
-tr:hover td{background:rgba(255,255,255,.02)}
-td.pass{color:var(--green)}td.warn{color:var(--amber)}td.fail{color:#ff4444}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:rgba(9,9,20,.7);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  margin:16px 0;
+  font-size:.85rem;
+}
+th,td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+th{color:var(--cyan);font:700 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+td{font-family:'JetBrains Mono',monospace;font-size:.82rem}
+td.pass{color:var(--green);font-weight:700}
+td.fail{color:#ff4444;font-weight:700}
+td.warn{color:var(--amber)}
 
-/* Code blocks */
-pre{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1rem 1.25rem;overflow-x:auto;font-family:var(--font-mono);font-size:.78rem;line-height:1.6;color:var(--cyan);margin:1rem 0}
-code{font-family:var(--font-mono);font-size:.82rem}
+/* Code */
+pre{
+  background:rgba(15,15,36,.8);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px 22px;
+  overflow-x:auto;
+  font:400 13px 'JetBrains Mono',monospace;
+  line-height:1.65;
+  color:var(--cyan);
+  margin:16px 0;
+}
 
-/* Cards */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1.5rem;margin:1rem 0}
-.card h3{font-family:var(--font-title);font-size:1.1rem;margin-bottom:.75rem}
+/* Backend grid */
+.backend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:16px 0}
+.be-item{
+  border:1px solid var(--border);
+  border-left:3px solid var(--green);
+  border-radius:0 16px 16px 0;
+  background:rgba(255,255,255,.025);
+  padding:14px 18px;
+}
+.be-item .be-label{font:700 10px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.be-item .be-val{font:700 14px 'JetBrains Mono',monospace;color:var(--green)}
+.be-item.amber{border-left-color:var(--amber)}
+.be-item.amber .be-val{color:var(--amber)}
 
-/* Verdict */
-.verdict{background:var(--surface);border:2px solid var(--green);border-radius:3px;padding:2rem;text-align:center;margin:2rem 0}
-.verdict .status{font-family:var(--font-title);font-size:1.8rem;font-weight:700;color:var(--green);margin-bottom:.5rem}
-.verdict .sub{color:var(--muted);font-size:.95rem}
+/* Canvas chart */
+.chart-wrap{
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:#050510;
+  padding:4px;
+  margin:20px 0;
+}
+canvas{width:100%;height:400px;display:block}
 
-/* Backend evidence */
-.backend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1rem 0}
-.backend-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);padding:1rem 1.25rem;border-radius:0 3px 3px 0}
-.backend-item .name{font-family:var(--font-mono);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
-.backend-item .value{font-family:var(--font-mono);font-size:.9rem;color:var(--green)}
-.backend-item.amber{border-left-color:var(--amber)}.backend-item.amber .value{color:var(--amber)}
+/* Scaling grid */
+.scale-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:640px){.scale-grid{grid-template-columns:1fr}}
+
+/* Limitations */
+ul.limits{color:var(--muted);font-size:.9rem;padding-left:1.5rem;list-style:disc}
+ul.limits li{margin-bottom:6px}
+ul.limits code{color:var(--cyan);font-size:.82rem}
+
+/* Watermark */
+.watermark{
+  position:fixed;
+  right:18px;
+  bottom:14px;
+  opacity:.5;
+  font:700 13px 'JetBrains Mono',monospace;
+  color:var(--dim);
+  pointer-events:none;
+}
 
 /* Footer */
-footer{text-align:center;padding:3rem 0 2rem;border-top:1px solid var(--border);margin-top:3rem}
+footer{
+  text-align:center;
+  padding:36px 0 20px;
+  border-top:1px solid var(--border);
+  margin-top:48px;
+}
 footer p{font-size:.75rem;color:var(--dim)}
 footer a{color:var(--cyan);text-decoration:none}
+footer a:hover{text-decoration:underline}
 
-/* Scroll animation */
-.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
-.fade-up.visible{opacity:1;transform:translateY(0)}
+/* Divider */
+.divider{height:1px;background:var(--border);margin:40px 0}
 </style>
 </head>
 <body>
-<div class="container">
+
+<main>
 
 <!-- Hero -->
-<div class="hero fade-up">
-  <div class="hero-badge">SM121 Verified &middot; Native NVFP4 &middot; TP=2</div>
-  <h1>Step 3.7 Flash <span>NVFP4</span></h1>
-  <p>198B parameter sparse MoE VLM served natively on dual NVIDIA DGX Spark (GB10/SM121) with vLLM TP=2 over Ray. Zero Marlin. Zero emulation.</p>
-</div>
-
-<!-- Verdict -->
-<div class="verdict fade-up">
-  <div class="status">GO</div>
-  <div class="sub">SM121-verified native NVFP4 execution on dual GB10</div>
-</div>
-
-<!-- Key Metrics -->
-<section class="fade-up">
-  <div class="section-label">Performance</div>
-  <h2>Benchmark Results</h2>
-  <div class="metrics">
-    <div class="metric">
-      <div class="label">Decode (tg128)</div>
-      <div class="value">16.49<span class="unit">tok/s</span></div>
-      <div class="note">llama-benchy, peak 18.00</div>
-    </div>
-    <div class="metric cyan">
-      <div class="label">Prefill (pp2048)</div>
-      <div class="value">1093<span class="unit">tok/s</span></div>
-      <div class="note">llama-benchy, &plusmn;94.73</div>
-    </div>
-    <div class="metric magenta">
-      <div class="label">Aggregate (c=2)</div>
-      <div class="value">27.01<span class="unit">tok/s</span></div>
-      <div class="note">2 concurrent, 2048&rarr;1024 each</div>
-    </div>
-    <div class="metric amber">
-      <div class="label">GPU Power</div>
-      <div class="value">25.5<span class="unit">W</span></div>
-      <div class="note">58&deg;C, 92% utilization</div>
-    </div>
-  </div>
-  <table style="margin-top:1rem">
-    <tr><th>Benchmark</th><th>tok/s</th><th>Method</th></tr>
-    <tr><td>llama-benchy tg128</td><td class="pass">16.49 &plusmn; 0.28</td><td>--pp 2048 --tg 128 --runs 3</td></tr>
-    <tr><td>llama-benchy pp2048</td><td class="pass">1093.06 &plusmn; 94.73</td><td>--pp 2048 --tg 128 --runs 3</td></tr>
-    <tr><td>Custom tg128 c1</td><td>14.02</td><td>/v1/completions, 1024&rarr;128, 3 runs</td></tr>
-    <tr><td>Custom random c1</td><td>13.20</td><td>/v1/completions, 2048&rarr;1024, 3 runs</td></tr>
-    <tr><td>Custom random c2</td><td>27.01</td><td>2 concurrent, 2048&rarr;1024, 3 runs</td></tr>
-    <tr><td>API latency</td><td>2.12 ms</td><td>llama-benchy</td></tr>
-  </table>
+<section class="hero">
+  <div class="badge">r0b0tlab / Blackwell NVFP4 benchmark</div>
+  <h1>Step 3.7 Flash<br>NVFP4 on dual GB10</h1>
+  <p class="hero-sub">198B parameter sparse MoE VLM served natively on dual NVIDIA DGX Spark (SM121 Blackwell) with vLLM TP=2 over Ray. FLASHINFER_CUTLASS + VLLM_CUTLASS backends. Zero Marlin. Zero emulation.</p>
+  <div class="metric-label">llama-benchy tg128</div>
+  <div class="metric">16.49 tok/s</div>
+  <p class="mono muted" style="font-size:14px;margin-top:6px">peak 18.00 tok/s &middot; prefill pp2048 = 1,093 tok/s &middot; API latency 2.12 ms</p>
 </section>
+
+<!-- Metric cards -->
+<div class="grid">
+  <div class="mini-card">
+    <div class="lab">Decode (tg128)</div>
+    <div class="val">16.49<span class="unit">tok/s</span></div>
+    <div class="note">llama-benchy, peak 18.00</div>
+  </div>
+  <div class="mini-card cyan">
+    <div class="lab">Prefill (pp2048)</div>
+    <div class="val">1,093<span class="unit">tok/s</span></div>
+    <div class="note">&plusmn;94.73, llama-benchy</div>
+  </div>
+  <div class="mini-card mag">
+    <div class="lab">Aggregate (c=2)</div>
+    <div class="val">27.01<span class="unit">tok/s</span></div>
+    <div class="note">2 concurrent, 2048&rarr;1024</div>
+  </div>
+  <div class="mini-card amber">
+    <div class="lab">GPU Power</div>
+    <div class="val">25.5<span class="unit">W</span></div>
+    <div class="note">58&deg;C, 92% utilization</div>
+  </div>
+</div>
+
+<!-- Benchmark chart -->
+<h2>Benchmark chart</h2>
+<div class="chart-wrap">
+  <canvas id="c" width="1100" height="400"></canvas>
+</div>
+<div id="table-wrap"></div>
 
 <!-- Model Profile -->
-<section class="fade-up">
-  <div class="section-label">Model</div>
-  <h2>Model Profile</h2>
-  <table>
-    <tr><th>Property</th><th>Value</th></tr>
-    <tr><td>Model</td><td>stepfun-ai/Step-3.7-Flash-NVFP4</td></tr>
-    <tr><td>Architecture</td><td>Step3p7ForConditionalGeneration</td></tr>
-    <tr><td>Total Parameters</td><td>~198B</td></tr>
-    <tr><td>Active Parameters</td><td>~11B / token</td></tr>
-    <tr><td>Experts</td><td>288, top-k=8</td></tr>
-    <tr><td>Context Length</td><td>256K (8K initial validated)</td></tr>
-    <tr><td>Modality</td><td>Image + Text (VLM)</td></tr>
-    <tr><td>Quantization</td><td>NVFP4 (ModelOpt 0.45.0), FP8 KV cache</td></tr>
-    <tr><td>Storage</td><td>~129 GB, 14 safetensors shards</td></tr>
-    <tr><td>License</td><td>Apache-2.0</td></tr>
-  </table>
-</section>
+<h2>Model profile</h2>
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Model</td><td>stepfun-ai/Step-3.7-Flash-NVFP4</td></tr>
+  <tr><td>Architecture</td><td>Step3p7ForConditionalGeneration</td></tr>
+  <tr><td>Total Parameters</td><td>~198B</td></tr>
+  <tr><td>Active Parameters</td><td>~11B / token</td></tr>
+  <tr><td>Experts</td><td>288, top-k=8</td></tr>
+  <tr><td>Context Length</td><td>256K max (32K validated)</td></tr>
+  <tr><td>Modality</td><td>Image + Text (VLM)</td></tr>
+  <tr><td>Quantization</td><td>NVFP4 (ModelOpt 0.45.0), FP8 KV cache</td></tr>
+  <tr><td>Storage</td><td>~129 GB, 14 safetensors shards</td></tr>
+  <tr><td>License</td><td>Apache-2.0</td></tr>
+</table>
 
 <!-- Backend Evidence -->
-<section class="fade-up">
-  <div class="section-label">SM121 Verification</div>
-  <h2>Backend Selection</h2>
-  <p style="color:var(--muted);margin-bottom:1rem">vLLM auto-selected native Blackwell CUTLASS backends on both TP ranks. No Marlin. No emulation.</p>
-  <div class="backend-grid">
-    <div class="backend-item">
-      <div class="name">NVFP4 MoE</div>
-      <div class="value">FLASHINFER_CUTLASS</div>
-    </div>
-    <div class="backend-item">
-      <div class="name">NVFP4 Dense</div>
-      <div class="value">VLLM_CUTLASS</div>
-    </div>
-    <div class="backend-item">
-      <div class="name">Attention</div>
-      <div class="value">FLASHINFER</div>
-    </div>
-    <div class="backend-item">
-      <div class="name">VIT Attention</div>
-      <div class="value">FLASH_ATTN</div>
-    </div>
-    <div class="backend-item amber">
-      <div class="name">All-Reduce</div>
-      <div class="value">PYNCCL</div>
-    </div>
-    <div class="backend-item">
-      <div class="name">SM Capability</div>
-      <div class="value">(12, 1) &mdash; SM121</div>
-    </div>
-  </div>
-  <pre>Worker_TP0: Using 'FLASHINFER_CUTLASS' NvFp4 MoE backend
+<h2>SM121 backend verification</h2>
+<p class="muted" style="margin-bottom:16px">vLLM auto-selected native Blackwell CUTLASS backends on both TP ranks. No Marlin. No emulation.</p>
+<div class="backend-grid">
+  <div class="be-item"><div class="be-label">NVFP4 MoE</div><div class="be-val">FLASHINFER_CUTLASS</div></div>
+  <div class="be-item"><div class="be-label">NVFP4 Dense</div><div class="be-val">VLLM_CUTLASS</div></div>
+  <div class="be-item"><div class="be-label">Attention</div><div class="be-val">FLASHINFER</div></div>
+  <div class="be-item"><div class="be-label">VIT Encoder</div><div class="be-val">FLASH_ATTN</div></div>
+  <div class="be-item amber"><div class="be-label">All-Reduce</div><div class="be-val">PYNCCL</div></div>
+  <div class="be-item"><div class="be-label">SM Capability</div><div class="be-val">(12, 1) &mdash; SM121</div></div>
+</div>
+<pre>Worker_TP0: Using 'FLASHINFER_CUTLASS' NvFp4 MoE backend
   out of potential backends: [FLASHINFER_TRTLLM, FLASHINFER_CUTEDSL,
   FLASHINFER_CUTEDSL_BATCHED, FLASHINFER_CUTLASS, VLLM_CUTLASS, MARLIN, EMULATION]
 
 Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   out of potential backends: [FLASHINFER_TRTLLM, FLASHINFER_CUTEDSL,
   FLASHINFER_CUTEDSL_BATCHED, FLASHINFER_CUTLASS, VLLM_CUTLASS, MARLIN, EMULATION]</pre>
-</section>
 
 <!-- Platform -->
-<section class="fade-up">
-  <div class="section-label">Platform</div>
-  <h2>Platform Capability</h2>
-  <table>
-    <tr><th>Check</th><th>Result</th></tr>
-    <tr><td>torch.cuda.get_device_capability()</td><td class="pass">(12, 1) &mdash; SM121</td></tr>
-    <tr><td>is_device_capability_family(120)</td><td class="pass">True</td></tr>
-    <tr><td>is_device_capability_family(100)</td><td>False</td></tr>
-    <tr><td>support_deep_gemm()</td><td>False (uses CUTLASS directly)</td></tr>
-    <tr><td>vllm._C</td><td class="pass">OK</td></tr>
-    <tr><td>vllm._C_stable_libtorch</td><td class="pass">OK</td></tr>
-    <tr><td>vllm._moe_C</td><td class="pass">OK</td></tr>
-    <tr><td>FlashInfer</td><td>0.6.11.post2</td></tr>
-    <tr><td>CUTLASS</td><td class="pass">Available</td></tr>
-  </table>
-</section>
+<h2>Platform capability</h2>
+<table>
+  <tr><th>Check</th><th>Result</th></tr>
+  <tr><td>torch.cuda.get_device_capability()</td><td class="pass">(12, 1) &mdash; SM121</td></tr>
+  <tr><td>is_device_capability_family(120)</td><td class="pass">True</td></tr>
+  <tr><td>is_device_capability_family(100)</td><td>False</td></tr>
+  <tr><td>support_deep_gemm()</td><td>False (uses CUTLASS directly)</td></tr>
+  <tr><td>vllm._C</td><td class="pass">OK</td></tr>
+  <tr><td>vllm._C_stable_libtorch</td><td class="pass">OK</td></tr>
+  <tr><td>vllm._moe_C</td><td class="pass">OK</td></tr>
+  <tr><td>FlashInfer</td><td>0.6.11.post2</td></tr>
+  <tr><td>CUTLASS</td><td class="pass">Available</td></tr>
+</table>
 
 <!-- Correctness -->
-<section class="fade-up">
-  <div class="section-label">Correctness</div>
-  <h2>Smoke Tests</h2>
-  <table>
-    <tr><th>Test</th><th>Result</th><th>Details</th></tr>
-    <tr><td>Text completion</td><td class="pass">PASS</td><td>"The capital of France is Paris."</td></tr>
-    <tr><td>Tool calling</td><td class="pass">PASS</td><td>get_weather({"city":" Paris"})</td></tr>
-    <tr><td>Vision (base64 PNG)</td><td class="pass">PASS</td><td>"The image is red" &mdash; correct color</td></tr>
-    <tr><td>NCCL all-reduce</td><td class="pass">PASS</td><td>29,670 all-reduces in nsys trace</td></tr>
-  </table>
-</section>
+<h2>Smoke tests</h2>
+<table>
+  <tr><th>Test</th><th>Result</th><th>Details</th></tr>
+  <tr><td>Text completion</td><td class="pass">PASS</td><td>&ldquo;The capital of France is Paris.&rdquo;</td></tr>
+  <tr><td>Tool calling</td><td class="pass">PASS</td><td>get_weather(&#123;&quot;city&quot;:&quot; Paris&quot;&#125;)</td></tr>
+  <tr><td>Vision (base64 PNG)</td><td class="pass">PASS</td><td>&ldquo;The image is red&rdquo; &mdash; correct color</td></tr>
+  <tr><td>NCCL all-reduce</td><td class="pass">PASS</td><td>29,670 all-reduces in nsys trace</td></tr>
+</table>
 
 <!-- Nsight -->
-<section class="fade-up">
-  <div class="section-label">Nsight Evidence</div>
-  <h2>NVIDIA Nsight Systems</h2>
-  <div class="card">
-    <h3>NVTX Trace Summary</h3>
-    <table>
-      <tr><th>Operation</th><th>Instances</th><th>% Time</th></tr>
-      <tr><td>NCCL:ncclAllReduce</td><td>29,670</td><td>52.4%</td></tr>
-      <tr><td>NCCL:ncclCommInitRank</td><td>2</td><td>33.2%</td></tr>
-      <tr><td>NCCL:ncclAllGather</td><td>324</td><td>7.6%</td></tr>
-      <tr><td>CCCL:cub::DeviceRadixSort</td><td>4</td><td>0.8%</td></tr>
-    </table>
-    <p style="color:var(--dim);font-size:.78rem;margin-top:.75rem">Note: nsys 2025.3.2 cannot trace Ray worker GPU kernels across distributed nodes. Backend selection logs are the primary SM121 verification gate.</p>
-  </div>
-</section>
+<h2>NVIDIA Nsight Systems</h2>
+<div class="card">
+  <h3 style="font-family:'Space Grotesk';margin-bottom:12px">NVTX Trace Summary</h3>
+  <table>
+    <tr><th>Operation</th><th>Instances</th><th>% Time</th></tr>
+    <tr><td>NCCL:ncclAllReduce</td><td>29,670</td><td>52.4%</td></tr>
+    <tr><td>NCCL:ncclCommInitRank</td><td>2</td><td>33.2%</td></tr>
+    <tr><td>NCCL:ncclAllGather</td><td>324</td><td>7.6%</td></tr>
+    <tr><td>CCCL:cub::DeviceRadixSort</td><td>4</td><td>0.8%</td></tr>
+  </table>
+  <p class="dim" style="font-size:.78rem;margin-top:12px">Note: nsys 2025.3.2 cannot trace Ray worker GPU kernels across distributed nodes. Backend selection logs are the primary SM121 verification gate.</p>
+</div>
 
-<!-- Server Config -->
-<section class="fade-up">
-  <div class="section-label">Configuration</div>
-  <h2>Launch Recipe</h2>
-  <pre>vllm serve stepfun-ai/Step-3.7-Flash-NVFP4 \
+<!-- Context & CUDA Graphs -->
+<h2>Context length &amp; CUDA graphs</h2>
+<div class="scale-grid">
+  <div class="card">
+    <h3 style="color:var(--cyan);font-family:'Space Grotesk';margin-bottom:12px">Context Length</h3>
+    <table>
+      <tr><th>max_model_len</th><th>Status</th></tr>
+      <tr><td>8,192</td><td class="pass">Verified</td></tr>
+      <tr><td>32,768</td><td class="pass">Verified (recommended)</td></tr>
+      <tr><td>65,536</td><td class="fail">OOM at 0.70 GPU util</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="color:var(--mag);font-family:'Space Grotesk';margin-bottom:12px">CUDA Graphs</h3>
+    <table>
+      <tr><th>Config</th><th>Status</th></tr>
+      <tr><td>32K eager</td><td class="pass">Verified</td></tr>
+      <tr><td>32K cuGraphs</td><td class="pass">Verified</td></tr>
+      <tr><td>64K cuGraphs</td><td class="fail">SHM deadlock</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Launch Recipe -->
+<h2>Launch recipe</h2>
+<pre>vllm serve stepfun-ai/Step-3.7-Flash-NVFP4 \
   --served-model-name step3p7 \
   --tensor-parallel-size 2 \
   --distributed-executor-backend ray \
@@ -258,80 +319,151 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   --tool-call-parser step3p5 \
   --enable-auto-tool-choice \
   --enforce-eager</pre>
-  <p style="color:var(--dim);font-size:.78rem;margin-top:.5rem">Network: NCCL_SOCKET_IFNAME=enp1s0f0np0, GLOO_SOCKET_IFNAME=enp1s0f0np0, TP_SOCKET_IFNAME=enp1s0f0np0</p>
-</section>
+<p class="dim" style="font-size:.78rem;margin-top:8px">Network: NCCL_SOCKET_IFNAME=enp1s0f0np0, GLOO_SOCKET_IFNAME=enp1s0f0np0, TP_SOCKET_IFNAME=enp1s0f0np0</p>
 
 <!-- Hardware -->
-<section class="fade-up">
-  <div class="section-label">Hardware</div>
-  <h2>Dual GB10 Cluster</h2>
-  <table>
-    <tr><th>Node</th><th>Role</th><th>IP</th><th>GPU</th><th>RAM</th></tr>
-    <tr><td>r0b0t-dgx</td><td>Head (TP0)</td><td>192.168.100.10</td><td>NVIDIA GB10 SM121</td><td>121 GiB</td></tr>
-    <tr><td>r0b0tdgx1</td><td>Worker (TP1)</td><td>192.168.100.11</td><td>NVIDIA GB10 SM121</td><td>119 GiB</td></tr>
-  </table>
-  <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">Interconnect: QSFP 200GbE, MTU 9000, RoCE ~196 Gbps, < 0.6ms RTT</p>
-</section>
-
-<!-- Context & CUDA Graphs -->
-<section class="fade-up">
-  <div class="section-label">Scaling</div>
-  <h2>Context Length &amp; CUDA Graphs</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-    <div class="card">
-      <h3 style="color:var(--cyan)">Context Length</h3>
-      <table>
-        <tr><th>max_model_len</th><th>Status</th></tr>
-        <tr><td>8,192</td><td class="pass">Verified</td></tr>
-        <tr><td>32,768</td><td class="pass">Verified (recommended)</td></tr>
-        <tr><td>65,536</td><td class="fail">OOM at 0.70 GPU util</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--magenta)">CUDA Graphs</h3>
-      <table>
-        <tr><th>Config</th><th>Status</th></tr>
-        <tr><td>32K eager</td><td class="pass">Verified</td></tr>
-        <tr><td>32K cuGraphs</td><td class="pass">Verified</td></tr>
-        <tr><td>64K cuGraphs</td><td class="fail">SHM deadlock</td></tr>
-      </table>
-    </div>
-  </div>
-</section>
+<h2>Dual GB10 cluster</h2>
+<table>
+  <tr><th>Node</th><th>Role</th><th>IP</th><th>GPU</th><th>RAM</th></tr>
+  <tr><td>r0b0t-dgx</td><td>Head (TP0)</td><td>192.168.100.10</td><td>NVIDIA GB10 SM121</td><td>121 GiB</td></tr>
+  <tr><td>r0b0tdgx1</td><td>Worker (TP1)</td><td>192.168.100.11</td><td>NVIDIA GB10 SM121</td><td>119 GiB</td></tr>
+</table>
+<p class="muted" style="font-size:.85rem;margin-top:8px">Interconnect: QSFP 200GbE, MTU 9000, RoCE ~196 Gbps, &lt; 0.6ms RTT</p>
 
 <!-- Limitations -->
-<section class="fade-up">
-  <div class="section-label">Known Limitations</div>
-  <h2>Caveats</h2>
-  <ul style="color:var(--muted);font-size:.9rem;padding-left:1.5rem;list-style:disc">
-    <li>CUDA graphs at 64K+ context cause SHM broadcast deadlock on cross-node TP=2</li>
-    <li><code>--enforce-eager</code> required on first run (Triton JIT + CUDA graphs cause RPC timeout)</li>
-    <li>64K context OOMs at 0.70 GPU util; needs 0.85+ or reduced max_num_seqs</li>
-    <li>Upstream recommends TP=4+EP; TP=2 is our validated target for dual GB10</li>
-    <li>PYNCCL all-reduce (SM121 NCCL_SYMM_MEM unavailable)</li>
-    <li>nsys cannot trace Ray worker GPU kernels across distributed nodes</li>
-  </ul>
-</section>
+<h2>Known limitations</h2>
+<ul class="limits">
+  <li>CUDA graphs at 64K+ context cause SHM broadcast deadlock on cross-node TP=2</li>
+  <li><code>--enforce-eager</code> required on first run (Triton JIT + CUDA graphs cause RPC timeout)</li>
+  <li>64K context OOMs at 0.70 GPU util; needs 0.85+ or reduced max_num_seqs</li>
+  <li>Upstream recommends TP=4+EP; TP=2 is our validated target for dual GB10</li>
+  <li>PYNCCL all-reduce (SM121 NCCL_SYMM_MEM unavailable)</li>
+  <li>nsys cannot trace Ray worker GPU kernels across distributed nodes</li>
+</ul>
 
 <!-- Footer -->
 <footer>
   <p>Published by <a href="https://github.com/r0b0tlab">r0b0tlab</a> &middot; <a href="https://x.com/mr_r0b0t">@mr-r0b0t</a></p>
-  <p style="margin-top:.5rem">
+  <p style="margin-top:6px">
     <a href="https://github.com/r0b0tlab/step37-flash-nvfp4-sm121-vllm-docker">GitHub</a> &middot;
     <a href="https://ghcr.io/r0b0tlab/vllm-step37-flash-nvfp4-sm121">Docker</a> &middot;
     <a href="https://huggingface.co/stepfun-ai/Step-3.7-Flash-NVFP4">Model</a>
   </p>
-  <p style="margin-top:.5rem">Model: stepfun-ai/Step-3.7-Flash-NVFP4 &middot; vLLM 0.1.dev16944 &middot; 2026-06-04</p>
+  <p style="margin-top:6px">Model: stepfun-ai/Step-3.7-Flash-NVFP4 &middot; vLLM 0.1.dev16944 &middot; 2026-06-04</p>
 </footer>
 
-</div>
+</main>
+
+<div class="watermark">@mr-r0b0t &mdash; r0b0tlab</div>
 
 <script>
-// Scroll animation
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
-}, {threshold: 0.1});
-document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+// Benchmark chart — canvas-based, no dependencies
+const DATA = {
+  tests: ['tg128','pp2048','tg128 c1','random c1','random c2'],
+  values: [16.49, 1093.06, 14.02, 13.20, 27.01],
+  labels: ['llama-benchy','llama-benchy','custom','custom','custom'],
+  units: ['tok/s','tok/s','tok/s','tok/s','tok/s']
+};
+
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// High-DPI
+const dpr = window.devicePixelRatio || 1;
+const rect = c.getBoundingClientRect();
+c.width = rect.width * dpr;
+c.height = rect.height * dpr;
+ctx.scale(dpr, dpr);
+const W = rect.width, H = rect.height;
+
+const pad = {l:80, r:30, t:30, b:70};
+const plotW = W - pad.l - pad.r;
+const plotH = H - pad.t - pad.b;
+
+// Background
+ctx.fillStyle = '#050510';
+ctx.fillRect(0, 0, W, H);
+
+// The first two values are much larger — use log scale or split axis
+// Better: normalize each bar to its own scale group
+const maxVal = Math.max(...DATA.values);
+const barW = Math.min(80, plotW / DATA.tests.length - 20);
+const gap = (plotW - barW * DATA.tests.length) / (DATA.tests.length + 1);
+
+// Grid lines
+ctx.strokeStyle = 'rgba(255,255,255,.08)';
+ctx.lineWidth = 1;
+for (let i = 0; i <= 5; i++) {
+  const y = pad.t + (plotH / 5) * i;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, y);
+  ctx.lineTo(W - pad.r, y);
+  ctx.stroke();
+}
+
+// Y-axis labels (normalized to max)
+ctx.font = '11px JetBrains Mono';
+ctx.fillStyle = '#7a7a9a';
+ctx.textAlign = 'right';
+for (let i = 0; i <= 5; i++) {
+  const y = pad.t + (plotH / 5) * i;
+  const val = maxVal * (1 - i / 5);
+  ctx.fillText(val >= 100 ? Math.round(val) : val.toFixed(1), pad.l - 10, y + 4);
+}
+
+// Bars
+const colors = ['#00ff88','#00e5ff','#00ff88','#00ff88','#ff00e5'];
+DATA.values.forEach((v, i) => {
+  const x = pad.l + gap + i * (barW + gap);
+  const barH = (v / maxVal) * plotH;
+  const y = pad.t + plotH - barH;
+
+  // Bar fill with gradient
+  const grad = ctx.createLinearGradient(x, y, x, y + barH);
+  grad.addColorStop(0, colors[i]);
+  grad.addColorStop(1, colors[i] + '44');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
+  ctx.fill();
+
+  // Glow
+  ctx.shadowColor = colors[i];
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = colors[i] + '22';
+  ctx.beginPath();
+  ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Value label
+  ctx.fillStyle = '#f0f0f5';
+  ctx.font = 'bold 13px JetBrains Mono';
+  ctx.textAlign = 'center';
+  ctx.fillText(v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(2), x + barW / 2, y - 8);
+
+  // X label
+  ctx.fillStyle = '#7a7a9a';
+  ctx.font = '11px JetBrains Mono';
+  ctx.save();
+  ctx.translate(x + barW / 2, H - pad.b + 16);
+  ctx.rotate(-0.2);
+  ctx.fillText(DATA.tests[i], 0, 0);
+  ctx.restore();
+
+  // Source label
+  ctx.fillStyle = '#4a4a6a';
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillText(DATA.labels[i], x + barW / 2, H - pad.b + 32);
+});
+
+// Build results table
+const tableHTML = `<table>
+  <tr><th>Benchmark</th><th>tok/s</th><th>Source</th></tr>
+  ${DATA.tests.map((t, i) => `<tr><td>${t}</td><td class="pass">${DATA.values[i] >= 100 ? Math.round(DATA.values[i]).toLocaleString() : DATA.values[i].toFixed(2)}</td><td>${DATA.labels[i]}</td></tr>`).join('')}
+</table>`;
+document.getElementById('table-wrap').innerHTML = tableHTML;
 </script>
+
 </body>
 </html>
