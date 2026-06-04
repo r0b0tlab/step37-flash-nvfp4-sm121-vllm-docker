@@ -66,3 +66,28 @@ Both TP ranks selected native Blackwell backends:
 - Model: stepfun-ai/Step-3.7-Flash-NVFP4 (129GB, 14 shards)
 - Evidence: evidence/ directory with runtime, benchmarks, nsight, correctness
 - Scripts: scripts/ directory with launch, smoke, benchmark tools
+
+## Additional Validation (2026-06-04 extended)
+
+### Context Length Scaling
+| max_model_len | Status | Notes |
+|---------------|--------|-------|
+| 8,192 | PASS | Initial validated |
+| 32,768 | PASS | Tested with --enforce-eager |
+| 65,536 | FAIL | OOM at 0.70 GPU util (107/121 GiB used) |
+
+### CUDA Graphs
+| Mode | Status | Notes |
+|------|--------|-------|
+| --enforce-eager | PASS | Default mode |
+| CUDA graphs (32K) | PASS | VLLM_COMPILE, cudagraph_mode=FULL_AND_PIECEWISE |
+| CUDA graphs (64K) | FAIL | SHM broadcast deadlock (cross-node TP=2) |
+
+### llama-benchy Baseline (pp2048, tg128, c=1, 3 runs)
+| Metric | Value |
+|--------|-------|
+| Prefill (pp2048) | 1093.06 ± 94.73 tok/s |
+| Decode (tg128) | 16.49 ± 0.28 tok/s |
+| Peak decode | 18.00 ± 0.82 tok/s |
+| API latency | 2.12 ms |
+| Coherence | PASSED |
