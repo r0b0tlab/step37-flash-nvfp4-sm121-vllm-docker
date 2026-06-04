@@ -25,7 +25,7 @@ A plug-and-play Docker container for running [StepFun Step 3.7 Flash NVFP4](http
 
 | Benchmark | tok/s | Notes |
 |-----------|-------|-------|
-| llama-benchy tg128 | **16.49** (peak 18.00) | Single-stream decode |
+| llama-benchy tg128 | **16.49** (peak 17.00) | Single-stream decode |
 | llama-benchy pp2048 | **1093.06** | Prefill throughput |
 | Custom tg128 c1 | 14.02 | 1024→128 tokens |
 | Custom random c1 | 13.2 | 2048→1024 tokens |
@@ -87,7 +87,7 @@ python3 -m vllm.entrypoints.openai.api_server \
   --distributed-executor-backend ray \
   --disable-custom-all-reduce --quantization modelopt \
   --kv-cache-dtype fp8 --disable-cascade-attn \
-  --gpu-memory-utilization 0.70 --max-model-len 32768 \
+  --gpu-memory-utilization 0.90 --max-model-len 65536 \
   --max-num-batched-tokens 32768 --max-num-seqs 4 \
   --reasoning-parser step3p5 --tool-call-parser step3p5 \
   --enable-auto-tool-choice --enforce-eager
@@ -172,7 +172,7 @@ Platform verification:
 | `--kv-cache-dtype fp8` | FP8 KV cache (model default) |
 | `--disable-cascade-attn` | **REQUIRED** — Step 3.7 uses hybrid sliding-window attention |
 | `--enforce-eager` | **REQUIRED** on first run — Triton JIT + CUDA graphs cause RPC timeout |
-| `--gpu-memory-utilization 0.70` | Conservative for 129GB model on 121GB nodes |
+| `--gpu-memory-utilization 0.90` | Conservative for 129GB model on 121GB nodes |
 
 ### Context Length vs GPU Memory
 

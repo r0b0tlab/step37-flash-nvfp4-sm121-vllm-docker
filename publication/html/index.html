@@ -3,208 +3,145 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Step 3.7 Flash NVFP4 — SM121 Verified TP=2 | r0b0tlab</title>
+<title>Step 3.7 Flash NVFP4 — SM121 Benchmark | r0b0tlab</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap');
-:root{--bg:#050510;--green:#00ff88;--mag:#ff00e5;--cyan:#00e5ff;--amber:#ffb800;--white:#f0f0f5;--muted:#7a7a9a;--dim:#4a4a6a;--surface:#0a0a1a;--border:rgba(255,255,255,.12)}
+:root{--bg:#050510;--green:#00ff88;--mag:#ff00e5;--cyan:#00e5ff;--amber:#ffb800;--white:#f0f0f5;--muted:#7a7a9a;--dim:#4a4a6a;--border:rgba(255,255,255,.12)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  margin:0;
-  background:radial-gradient(circle at 20% 0%,#063 0,#050510 42%);
-  color:var(--white);
-  font-family:Inter,sans-serif;
-  line-height:1.6;
-}
-main{max-width:1180px;margin:auto;padding:36px 22px 80px}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#063 0,#050510 42%);color:var(--white);font-family:Inter,sans-serif;line-height:1.6}
+main{max-width:1180px;margin:auto;padding:clamp(16px,4vw,36px) clamp(12px,3vw,22px) 80px}
 h1,h2{font-family:'Space Grotesk',sans-serif}
-h1{font-size:clamp(40px,7vw,82px);line-height:.94;margin-bottom:16px}
-h2{font-size:1.6rem;font-weight:700;margin:48px 0 20px}
-.hero,.card{
-  border:1px solid var(--border);
-  border-radius:24px;
-  background:rgba(255,255,255,.035);
-  padding:28px;
-  box-shadow:0 0 70px rgba(0,255,136,.06);
-}
+h1{font-size:clamp(36px,7vw,82px);line-height:.94;margin-bottom:16px}
+h2{font-size:clamp(1.2rem,3vw,1.6rem);font-weight:700;margin:48px 0 20px}
+.hero,.card{border:1px solid var(--border);border-radius:24px;background:rgba(255,255,255,.035);padding:clamp(16px,3vw,28px);box-shadow:0 0 70px rgba(0,255,136,.06)}
 .hero{margin-bottom:36px}
-.hero-sub{color:var(--muted);font-size:1.05rem;max-width:680px;margin-bottom:20px}
-.metric{
-  font:900 clamp(36px,6vw,56px) 'JetBrains Mono',monospace;
-  color:var(--green);
-  margin:8px 0;
-}
-.metric-label{font:700 13px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.badge{
-  display:inline-block;
-  font:700 11px 'JetBrains Mono',monospace;
-  color:var(--green);
-  border:1px solid rgba(0,255,136,.35);
-  padding:4px 14px;
-  border-radius:4px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-bottom:16px;
-}
+.hero-sub{color:var(--muted);font-size:clamp(.9rem,2vw,1.05rem);max-width:680px;margin-bottom:20px}
+.metric{font:900 clamp(32px,6vw,56px) 'JetBrains Mono',monospace;color:var(--green);margin:8px 0}
 .mono{font-family:'JetBrains Mono',monospace}
-.muted{color:var(--muted)}
-.dim{color:var(--dim)}
+.muted{color:var(--muted)}.dim{color:var(--dim)}
+.badge{display:inline-block;font:700 11px 'JetBrains Mono',monospace;color:var(--green);border:1px solid rgba(0,255,136,.35);padding:4px 14px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
 
-/* Grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:20px 0}
-.mini-card{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:rgba(255,255,255,.03);
-  padding:20px;
-  border-top:3px solid var(--green);
-}
-.mini-card.cyan{border-top-color:var(--cyan)}
-.mini-card.cyan .val{color:var(--cyan)}
-.mini-card.mag{border-top-color:var(--mag)}
-.mini-card.mag .val{color:var(--mag)}
-.mini-card.amber{border-top-color:var(--amber)}
-.mini-card.amber .val{color:var(--amber)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px;margin:20px 0}
+.mini-card{border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.03);padding:20px;border-top:3px solid var(--green)}
+.mini-card.cyan{border-top-color:var(--cyan)}.mini-card.cyan .val{color:var(--cyan)}
+.mini-card.mag{border-top-color:var(--mag)}.mini-card.mag .val{color:var(--mag)}
+.mini-card.amber{border-top-color:var(--amber)}.mini-card.amber .val{color:var(--amber)}
 .mini-card .lab{font:700 10px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
-.mini-card .val{font:900 32px 'JetBrains Mono',monospace;color:var(--green)}
+.mini-card .val{font:900 clamp(24px,4vw,32px) 'JetBrains Mono',monospace;color:var(--green)}
 .mini-card .unit{font:400 14px 'JetBrains Mono',monospace;color:var(--muted);margin-left:4px}
 .mini-card .note{font:400 12px Inter,sans-serif;color:var(--dim);margin-top:6px}
 
-/* Tables */
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:rgba(9,9,20,.7);
-  border:1px solid var(--border);
-  border-radius:16px;
-  overflow:hidden;
-  margin:16px 0;
-  font-size:.85rem;
-}
+table{width:100%;border-collapse:collapse;background:rgba(9,9,20,.7);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:16px 0;font-size:clamp(.72rem,1.5vw,.85rem)}
 th,td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
 th{color:var(--cyan);font:700 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
-td{font-family:'JetBrains Mono',monospace;font-size:.82rem}
+td{font-family:'JetBrains Mono',monospace;font-size:clamp(.7rem,1.4vw,.82rem)}
 td.pass{color:var(--green);font-weight:700}
 td.fail{color:#ff4444;font-weight:700}
 td.warn{color:var(--amber)}
+@media(max-width:600px){th,td{padding:8px 10px}}
 
-/* Code */
-pre{
-  background:rgba(15,15,36,.8);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:18px 22px;
-  overflow-x:auto;
-  font:400 13px 'JetBrains Mono',monospace;
-  line-height:1.65;
-  color:var(--cyan);
-  margin:16px 0;
-}
+pre{background:rgba(15,15,36,.8);border:1px solid var(--border);border-radius:16px;padding:clamp(12px,2vw,18px) clamp(14px,3vw,22px);overflow-x:auto;font:400 clamp(11px,1.5vw,13px) 'JetBrains Mono',monospace;line-height:1.65;color:var(--cyan);margin:16px 0}
 
-/* Backend grid */
-.backend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:16px 0}
-.be-item{
-  border:1px solid var(--border);
-  border-left:3px solid var(--green);
-  border-radius:0 16px 16px 0;
-  background:rgba(255,255,255,.025);
-  padding:14px 18px;
-}
+.backend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin:16px 0}
+.be-item{border:1px solid var(--border);border-left:3px solid var(--green);border-radius:0 16px 16px 0;background:rgba(255,255,255,.025);padding:14px 18px}
 .be-item .be-label{font:700 10px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
 .be-item .be-val{font:700 14px 'JetBrains Mono',monospace;color:var(--green)}
-.be-item.amber{border-left-color:var(--amber)}
-.be-item.amber .be-val{color:var(--amber)}
+.be-item.amber{border-left-color:var(--amber)}.be-item.amber .be-val{color:var(--amber)}
 
-/* Canvas chart */
-.chart-wrap{
-  border:1px solid var(--border);
-  border-radius:20px;
-  background:#050510;
-  padding:4px;
-  margin:20px 0;
-}
-canvas{width:100%;height:400px;display:block}
+.chart-wrap{border:1px solid var(--border);border-radius:20px;background:#050510;padding:4px;margin:20px 0}
+canvas{width:100%;height:clamp(280px,50vw,440px);display:block}
 
-/* Scaling grid */
-.scale-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
-@media(max-width:640px){.scale-grid{grid-template-columns:1fr}}
-
-/* Limitations */
+.scale-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin:16px 0}
 ul.limits{color:var(--muted);font-size:.9rem;padding-left:1.5rem;list-style:disc}
 ul.limits li{margin-bottom:6px}
 ul.limits code{color:var(--cyan);font-size:.82rem}
-
-/* Watermark */
-.watermark{
-  position:fixed;
-  right:18px;
-  bottom:14px;
-  opacity:.5;
-  font:700 13px 'JetBrains Mono',monospace;
-  color:var(--dim);
-  pointer-events:none;
-}
-
-/* Footer */
-footer{
-  text-align:center;
-  padding:36px 0 20px;
-  border-top:1px solid var(--border);
-  margin-top:48px;
-}
+.watermark{position:fixed;right:18px;bottom:14px;opacity:.5;font:700 13px 'JetBrains Mono',monospace;color:var(--dim);pointer-events:none}
+footer{text-align:center;padding:36px 0 20px;border-top:1px solid var(--border);margin-top:48px}
 footer p{font-size:.75rem;color:var(--dim)}
 footer a{color:var(--cyan);text-decoration:none}
 footer a:hover{text-decoration:underline}
-
-/* Divider */
-.divider{height:1px;background:var(--border);margin:40px 0}
 </style>
 </head>
 <body>
-
 <main>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero">
   <div class="badge">r0b0tlab / Blackwell NVFP4 benchmark</div>
   <h1>Step 3.7 Flash<br>NVFP4 on dual GB10</h1>
-  <p class="hero-sub">198B parameter sparse MoE VLM served natively on dual NVIDIA DGX Spark (SM121 Blackwell) with vLLM TP=2 over Ray. FLASHINFER_CUTLASS + VLLM_CUTLASS backends. Zero Marlin. Zero emulation.</p>
-  <div class="metric-label">llama-benchy tg128</div>
-  <div class="metric">16.49 tok/s</div>
-  <p class="mono muted" style="font-size:14px;margin-top:6px">peak 18.00 tok/s &middot; prefill pp2048 = 1,093 tok/s &middot; API latency 2.12 ms</p>
+  <p class="hero-sub">198B parameter sparse MoE VLM served natively on dual NVIDIA DGX Spark (SM121 Blackwell) with vLLM TP=2. FLASHINFER_CUTLASS + VLLM_CUTLASS backends. Zero Marlin. Zero emulation.</p>
+  <div style="font:700 13px 'JetBrains Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">llama-benchy tg128</div>
+  <div class="metric">15.33 tok/s</div>
+  <p class="mono muted" style="font-size:14px;margin-top:6px">peak 17.00 &middot; prefill pp2048 = 1,008 tok/s &middot; API latency 3.70 ms</p>
 </section>
 
-<!-- Metric cards -->
+<!-- METRIC CARDS -->
 <div class="grid">
   <div class="mini-card">
     <div class="lab">Decode (tg128)</div>
-    <div class="val">16.49<span class="unit">tok/s</span></div>
-    <div class="note">llama-benchy, peak 18.00</div>
+    <div class="val">15.33<span class="unit">tok/s</span></div>
+    <div class="note">llama-benchy, peak 17.00</div>
   </div>
   <div class="mini-card cyan">
     <div class="lab">Prefill (pp2048)</div>
-    <div class="val">1,093<span class="unit">tok/s</span></div>
-    <div class="note">&plusmn;94.73, llama-benchy</div>
+    <div class="val">1,008<span class="unit">tok/s</span></div>
+    <div class="note">&plusmn;144.14, llama-benchy</div>
   </div>
   <div class="mini-card mag">
-    <div class="lab">Aggregate (c=2)</div>
-    <div class="val">27.01<span class="unit">tok/s</span></div>
-    <div class="note">2 concurrent, 2048&rarr;1024</div>
+    <div class="lab">Peak Aggregate</div>
+    <div class="val">52.61<span class="unit">tok/s</span></div>
+    <div class="note">tg128 c=5, 5/5 ok</div>
   </div>
   <div class="mini-card amber">
     <div class="lab">GPU Power</div>
-    <div class="val">25.5<span class="unit">W</span></div>
-    <div class="note">58&deg;C, 92% utilization</div>
+    <div class="val">27.4<span class="unit">W</span></div>
+    <div class="note">60&deg;C, 92% util</div>
   </div>
 </div>
 
-<!-- Benchmark chart -->
-<h2>Benchmark chart</h2>
+<!-- CONCURRENCY CHART -->
+<h2>Concurrency scaling</h2>
+<p class="muted" style="margin-bottom:12px">Aggregate throughput scales linearly with concurrency. Per-request latency remains stable.</p>
 <div class="chart-wrap">
-  <canvas id="c" width="1100" height="400"></canvas>
+  <canvas id="c1" width="1100" height="440"></canvas>
 </div>
-<div id="table-wrap"></div>
 
-<!-- Model Profile -->
+<!-- CONCURRENCY TABLE -->
+<table>
+  <tr><th>Test</th><th>Conc</th><th>Aggregate tok/s</th><th>Per-req tok/s</th><th>Success</th></tr>
+  <tr><td>tg128</td><td>1</td><td class="pass">13.55</td><td>13.55</td><td class="pass">3/3</td></tr>
+  <tr><td>tg128</td><td>2</td><td class="pass">24.28</td><td>12.14</td><td class="pass">3/3</td></tr>
+  <tr><td>tg128</td><td>3</td><td class="pass">33.80</td><td>11.33</td><td class="pass">3/3</td></tr>
+  <tr><td>tg128</td><td>4</td><td class="pass">43.28</td><td>10.86</td><td class="pass">3/3</td></tr>
+  <tr><td>tg128</td><td>5</td><td class="pass">51.25</td><td>10.32</td><td class="pass">3/3</td></tr>
+  <tr><td>random (2k&rarr;512)</td><td>1</td><td class="pass">13.20</td><td>13.20</td><td class="pass">3/3</td></tr>
+  <tr><td>random (2k&rarr;512)</td><td>2</td><td class="pass">24.60</td><td>12.31</td><td class="pass">3/3</td></tr>
+  <tr><td>random (2k&rarr;512)</td><td>3</td><td class="pass">33.96</td><td>11.35</td><td class="pass">3/3</td></tr>
+  <tr><td>random (2k&rarr;512)</td><td>4</td><td class="pass">42.06</td><td>10.53</td><td class="pass">3/3</td></tr>
+  <tr><td>random (2k&rarr;512)</td><td>5</td><td class="pass">49.97</td><td>10.01</td><td class="pass">3/3</td></tr>
+</table>
+
+<!-- DEPTH SWEEP CHART -->
+<h2>Context depth scaling</h2>
+<p class="muted" style="margin-bottom:12px">Decode throughput holds steady as prompt context grows. Prefill throughput scales with depth.</p>
+<div class="chart-wrap">
+  <canvas id="c2" width="1100" height="440"></canvas>
+</div>
+
+<!-- DEPTH TABLE -->
+<table>
+  <tr><th>Test</th><th>tok/s</th><th>Peak</th><th>TTFR (ms)</th></tr>
+  <tr><td>tg128 @ d0</td><td class="pass">15.33 &plusmn; 1.10</td><td>17.00</td><td>&mdash;</td></tr>
+  <tr><td>tg128 @ d4096</td><td class="pass">15.18 &plusmn; 1.58</td><td>17.00</td><td>&mdash;</td></tr>
+  <tr><td>tg128 @ d8192</td><td class="pass">15.49 &plusmn; 1.10</td><td>17.00</td><td>&mdash;</td></tr>
+  <tr><td>tg128 @ d16384</td><td class="pass">14.93 &plusmn; 1.42</td><td>17.00</td><td>&mdash;</td></tr>
+  <tr><td>pp2048 @ d0</td><td>1,008 &plusmn; 144</td><td>&mdash;</td><td>2,082</td></tr>
+  <tr><td>pp2048 @ d4096</td><td>1,370 &plusmn; 24</td><td>&mdash;</td><td>4,495</td></tr>
+  <tr><td>pp2048 @ d8192</td><td>1,372 &plusmn; 74</td><td>&mdash;</td><td>7,494</td></tr>
+  <tr><td>pp2048 @ d16384</td><td>1,281 &plusmn; 168</td><td>&mdash;</td><td>14,671</td></tr>
+</table>
+
+<!-- MODEL PROFILE -->
 <h2>Model profile</h2>
 <table>
   <tr><th>Property</th><th>Value</th></tr>
@@ -213,14 +150,14 @@ footer a:hover{text-decoration:underline}
   <tr><td>Total Parameters</td><td>~198B</td></tr>
   <tr><td>Active Parameters</td><td>~11B / token</td></tr>
   <tr><td>Experts</td><td>288, top-k=8</td></tr>
-  <tr><td>Context Length</td><td>256K max (32K validated)</td></tr>
+  <tr><td>Context Length</td><td>256K max (64K validated at 0.90 GPU util)</td></tr>
   <tr><td>Modality</td><td>Image + Text (VLM)</td></tr>
   <tr><td>Quantization</td><td>NVFP4 (ModelOpt 0.45.0), FP8 KV cache</td></tr>
   <tr><td>Storage</td><td>~129 GB, 14 safetensors shards</td></tr>
   <tr><td>License</td><td>Apache-2.0</td></tr>
 </table>
 
-<!-- Backend Evidence -->
+<!-- BACKEND EVIDENCE -->
 <h2>SM121 backend verification</h2>
 <p class="muted" style="margin-bottom:16px">vLLM auto-selected native Blackwell CUTLASS backends on both TP ranks. No Marlin. No emulation.</p>
 <div class="backend-grid">
@@ -239,7 +176,7 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   out of potential backends: [FLASHINFER_TRTLLM, FLASHINFER_CUTEDSL,
   FLASHINFER_CUTEDSL_BATCHED, FLASHINFER_CUTLASS, VLLM_CUTLASS, MARLIN, EMULATION]</pre>
 
-<!-- Platform -->
+<!-- PLATFORM -->
 <h2>Platform capability</h2>
 <table>
   <tr><th>Check</th><th>Result</th></tr>
@@ -254,7 +191,7 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   <tr><td>CUTLASS</td><td class="pass">Available</td></tr>
 </table>
 
-<!-- Correctness -->
+<!-- CORRECTNESS -->
 <h2>Smoke tests</h2>
 <table>
   <tr><th>Test</th><th>Result</th><th>Details</th></tr>
@@ -264,7 +201,7 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   <tr><td>NCCL all-reduce</td><td class="pass">PASS</td><td>29,670 all-reduces in nsys trace</td></tr>
 </table>
 
-<!-- Nsight -->
+<!-- NSIGHT -->
 <h2>NVIDIA Nsight Systems</h2>
 <div class="card">
   <h3 style="font-family:'Space Grotesk';margin-bottom:12px">NVTX Trace Summary</h3>
@@ -275,10 +212,10 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
     <tr><td>NCCL:ncclAllGather</td><td>324</td><td>7.6%</td></tr>
     <tr><td>CCCL:cub::DeviceRadixSort</td><td>4</td><td>0.8%</td></tr>
   </table>
-  <p class="dim" style="font-size:.78rem;margin-top:12px">Note: nsys 2025.3.2 cannot trace Ray worker GPU kernels across distributed nodes. Backend selection logs are the primary SM121 verification gate.</p>
+  <p class="dim" style="font-size:.78rem;margin-top:12px">nsys 2025.3.2 cannot trace Ray worker GPU kernels across distributed nodes. Backend selection logs are the primary SM121 verification gate.</p>
 </div>
 
-<!-- Context & CUDA Graphs -->
+<!-- CONTEXT & CUDA GRAPHS -->
 <h2>Context length &amp; CUDA graphs</h2>
 <div class="scale-grid">
   <div class="card">
@@ -286,8 +223,8 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
     <table>
       <tr><th>max_model_len</th><th>Status</th></tr>
       <tr><td>8,192</td><td class="pass">Verified</td></tr>
-      <tr><td>32,768</td><td class="pass">Verified (recommended)</td></tr>
-      <tr><td>65,536</td><td class="fail">OOM at 0.70 GPU util</td></tr>
+      <tr><td>32,768</td><td class="pass">Verified</td></tr>
+      <tr><td>65,536</td><td class="pass">Verified (0.90 GPU util)</td></tr>
     </table>
   </div>
   <div class="card">
@@ -301,7 +238,7 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   </div>
 </div>
 
-<!-- Launch Recipe -->
+<!-- LAUNCH RECIPE -->
 <h2>Launch recipe</h2>
 <pre>vllm serve stepfun-ai/Step-3.7-Flash-NVFP4 \
   --served-model-name step3p7 \
@@ -311,37 +248,38 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   --quantization modelopt \
   --kv-cache-dtype fp8 \
   --disable-cascade-attn \
-  --gpu-memory-utilization 0.70 \
-  --max-model-len 32768 \
-  --max-num-batched-tokens 32768 \
-  --max-num-seqs 4 \
+  --gpu-memory-utilization 0.90 \
+  --max-model-len 65536 \
+  --max-num-batched-tokens 65536 \
+  --max-num-seqs 5 \
   --reasoning-parser step3p5 \
   --tool-call-parser step3p5 \
   --enable-auto-tool-choice \
   --enforce-eager</pre>
-<p class="dim" style="font-size:.78rem;margin-top:8px">Network: NCCL_SOCKET_IFNAME=enp1s0f0np0, GLOO_SOCKET_IFNAME=enp1s0f0np0, TP_SOCKET_IFNAME=enp1s0f0np0</p>
+<p class="dim" style="font-size:.78rem;margin-top:8px">Network: NCCL_SOCKET_IFNAME, GLOO_SOCKET_IFNAME, TP_SOCKET_IFNAME must point to QSFP interface</p>
 
-<!-- Hardware -->
+<!-- HARDWARE -->
 <h2>Dual GB10 cluster</h2>
 <table>
-  <tr><th>Node</th><th>Role</th><th>IP</th><th>GPU</th><th>RAM</th></tr>
-  <tr><td>r0b0t-dgx</td><td>Head (TP0)</td><td>192.168.100.10</td><td>NVIDIA GB10 SM121</td><td>121 GiB</td></tr>
-  <tr><td>r0b0tdgx1</td><td>Worker (TP1)</td><td>192.168.100.11</td><td>NVIDIA GB10 SM121</td><td>119 GiB</td></tr>
+  <tr><th>Component</th><th>Spec</th></tr>
+  <tr><td>GPU</td><td>2&times; NVIDIA GB10 (SM121 Blackwell)</td></tr>
+  <tr><td>Memory</td><td>128 GB unified per node</td></tr>
+  <tr><td>Interconnect</td><td>QSFP 200GbE, MTU 9000, RoCE</td></tr>
+  <tr><td>Topology</td><td>TP=2 via Ray, one GPU per node</td></tr>
+  <tr><td>KV Cache</td><td>372,395 tokens (FP8)</td></tr>
 </table>
-<p class="muted" style="font-size:.85rem;margin-top:8px">Interconnect: QSFP 200GbE, MTU 9000, RoCE ~196 Gbps, &lt; 0.6ms RTT</p>
 
-<!-- Limitations -->
+<!-- LIMITATIONS -->
 <h2>Known limitations</h2>
 <ul class="limits">
   <li>CUDA graphs at 64K+ context cause SHM broadcast deadlock on cross-node TP=2</li>
   <li><code>--enforce-eager</code> required on first run (Triton JIT + CUDA graphs cause RPC timeout)</li>
-  <li>64K context OOMs at 0.70 GPU util; needs 0.85+ or reduced max_num_seqs</li>
   <li>Upstream recommends TP=4+EP; TP=2 is our validated target for dual GB10</li>
   <li>PYNCCL all-reduce (SM121 NCCL_SYMM_MEM unavailable)</li>
   <li>nsys cannot trace Ray worker GPU kernels across distributed nodes</li>
 </ul>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
   <p>Published by <a href="https://github.com/r0b0tlab">r0b0tlab</a> &middot; <a href="https://x.com/mr_r0b0t">@mr-r0b0t</a></p>
   <p style="margin-top:6px">
@@ -349,121 +287,119 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
     <a href="https://ghcr.io/r0b0tlab/vllm-step37-flash-nvfp4-sm121">Docker</a> &middot;
     <a href="https://huggingface.co/stepfun-ai/Step-3.7-Flash-NVFP4">Model</a>
   </p>
-  <p style="margin-top:6px">Model: stepfun-ai/Step-3.7-Flash-NVFP4 &middot; vLLM 0.1.dev16944 &middot; 2026-06-04</p>
+  <p style="margin-top:6px">vLLM 0.1.dev16944 &middot; FlashInfer 0.6.11.post2 &middot; 2026-06-04</p>
 </footer>
-
 </main>
 
 <div class="watermark">@mr-r0b0t &mdash; r0b0tlab</div>
 
 <script>
-// Benchmark chart — canvas-based, no dependencies
-const DATA = {
-  tests: ['tg128','pp2048','tg128 c1','random c1','random c2'],
-  values: [16.49, 1093.06, 14.02, 13.20, 27.01],
-  labels: ['llama-benchy','llama-benchy','custom','custom','custom'],
-  units: ['tok/s','tok/s','tok/s','tok/s','tok/s']
-};
+// ─── CHART 1: Concurrency scaling ─────────────────────────
+(function(){
+const c=document.getElementById('c1'),x=c.getContext('2d');
+const dpr=window.devicePixelRatio||1,r=c.getBoundingClientRect();
+c.width=r.width*dpr;c.height=r.height*dpr;x.scale(dpr,dpr);
+const W=r.width,H=r.height,p={l:70,r:20,t:30,b:60},pw=W-p.l-p.r,ph=H-p.t-p.b;
 
-const c = document.getElementById('c');
-const ctx = c.getContext('2d');
+x.fillStyle='#050510';x.fillRect(0,0,W,H);
 
-// High-DPI
-const dpr = window.devicePixelRatio || 1;
-const rect = c.getBoundingClientRect();
-c.width = rect.width * dpr;
-c.height = rect.height * dpr;
-ctx.scale(dpr, dpr);
-const W = rect.width, H = rect.height;
+const conc=[1,2,3,4,5];
+const aggTg=[13.55,24.28,33.80,43.28,51.25];
+const perTg=[13.55,12.14,11.33,10.86,10.32];
+const aggR=[13.20,24.60,33.96,42.06,49.97];
+const perR=[13.20,12.31,11.35,10.53,10.01];
 
-const pad = {l:80, r:30, t:30, b:70};
-const plotW = W - pad.l - pad.r;
-const plotH = H - pad.t - pad.b;
+const maxA=60,maxP=16;
+const bw=Math.min(50,pw/conc.length-24);
+const gap=(pw-bw*conc.length*2)/(conc.length+1);
 
-// Background
-ctx.fillStyle = '#050510';
-ctx.fillRect(0, 0, W, H);
+// Grid
+x.strokeStyle='rgba(255,255,255,.06)';x.lineWidth=1;
+for(let i=0;i<=6;i++){const y=p.t+ph-ph*(i/6);x.beginPath();x.moveTo(p.l,y);x.lineTo(W-p.r,y);x.stroke();
+x.fillStyle='#4a4a6a';x.font='10px JetBrains Mono';x.textAlign='right';x.fillText(Math.round(maxA*i/6),p.l-8,y+3);}
 
-// The first two values are much larger — use log scale or split axis
-// Better: normalize each bar to its own scale group
-const maxVal = Math.max(...DATA.values);
-const barW = Math.min(80, plotW / DATA.tests.length - 20);
-const gap = (plotW - barW * DATA.tests.length) / (DATA.tests.length + 1);
-
-// Grid lines
-ctx.strokeStyle = 'rgba(255,255,255,.08)';
-ctx.lineWidth = 1;
-for (let i = 0; i <= 5; i++) {
-  const y = pad.t + (plotH / 5) * i;
-  ctx.beginPath();
-  ctx.moveTo(pad.l, y);
-  ctx.lineTo(W - pad.r, y);
-  ctx.stroke();
-}
-
-// Y-axis labels (normalized to max)
-ctx.font = '11px JetBrains Mono';
-ctx.fillStyle = '#7a7a9a';
-ctx.textAlign = 'right';
-for (let i = 0; i <= 5; i++) {
-  const y = pad.t + (plotH / 5) * i;
-  const val = maxVal * (1 - i / 5);
-  ctx.fillText(val >= 100 ? Math.round(val) : val.toFixed(1), pad.l - 10, y + 4);
-}
-
-// Bars
-const colors = ['#00ff88','#00e5ff','#00ff88','#00ff88','#ff00e5'];
-DATA.values.forEach((v, i) => {
-  const x = pad.l + gap + i * (barW + gap);
-  const barH = (v / maxVal) * plotH;
-  const y = pad.t + plotH - barH;
-
-  // Bar fill with gradient
-  const grad = ctx.createLinearGradient(x, y, x, y + barH);
-  grad.addColorStop(0, colors[i]);
-  grad.addColorStop(1, colors[i] + '44');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
-  ctx.fill();
-
-  // Glow
-  ctx.shadowColor = colors[i];
-  ctx.shadowBlur = 12;
-  ctx.fillStyle = colors[i] + '22';
-  ctx.beginPath();
-  ctx.roundRect(x, y, barW, barH, [6, 6, 0, 0]);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  // Value label
-  ctx.fillStyle = '#f0f0f5';
-  ctx.font = 'bold 13px JetBrains Mono';
-  ctx.textAlign = 'center';
-  ctx.fillText(v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(2), x + barW / 2, y - 8);
-
-  // X label
-  ctx.fillStyle = '#7a7a9a';
-  ctx.font = '11px JetBrains Mono';
-  ctx.save();
-  ctx.translate(x + barW / 2, H - pad.b + 16);
-  ctx.rotate(-0.2);
-  ctx.fillText(DATA.tests[i], 0, 0);
-  ctx.restore();
-
-  // Source label
-  ctx.fillStyle = '#4a4a6a';
-  ctx.font = '10px JetBrains Mono';
-  ctx.fillText(DATA.labels[i], x + barW / 2, H - pad.b + 32);
+// Bars — aggregate
+conc.forEach((_,i)=>{
+const xp=p.l+gap+i*(bw*2+gap);
+// tg128
+const h1=(aggTg[i]/maxA)*ph;
+const g1=x.createLinearGradient(xp,p.t+ph-h1,xp,p.t+ph);
+g1.addColorStop(0,'#00ff88');g1.addColorStop(1,'#00ff8844');
+x.fillStyle=g1;x.beginPath();x.roundRect(xp,p.t+ph-h1,bw,h1,[5,5,0,0]);x.fill();
+// random
+const h2=(aggR[i]/maxA)*ph;
+const g2=x.createLinearGradient(xp+bw,p.t+ph-h2,xp+bw,p.t+ph);
+g2.addColorStop(0,'#00e5ff');g2.addColorStop(1,'#00e5ff44');
+x.fillStyle=g2;x.beginPath();x.roundRect(xp+bw,p.t+ph-h2,bw,h2,[5,5,0,0]);x.fill();
+// Labels
+x.fillStyle='#f0f0f5';x.font='bold 11px JetBrains Mono';x.textAlign='center';
+x.fillText(aggTg[i].toFixed(1),xp+bw/2,p.t+ph-h1-6);
+x.fillText(aggR[i].toFixed(1),xp+bw*1.5,p.t+ph-h2-6);
+// X label
+x.fillStyle='#7a7a9a';x.font='11px JetBrains Mono';x.fillText('c='+conc[i],xp+bw,p.t+ph+16);
 });
 
-// Build results table
-const tableHTML = `<table>
-  <tr><th>Benchmark</th><th>tok/s</th><th>Source</th></tr>
-  ${DATA.tests.map((t, i) => `<tr><td>${t}</td><td class="pass">${DATA.values[i] >= 100 ? Math.round(DATA.values[i]).toLocaleString() : DATA.values[i].toFixed(2)}</td><td>${DATA.labels[i]}</td></tr>`).join('')}
-</table>`;
-document.getElementById('table-wrap').innerHTML = tableHTML;
-</script>
+// Legend
+const ly=12;
+x.fillStyle='#00ff88';x.fillRect(p.l,ly,12,12);x.fillStyle='#f0f0f5';x.font='11px Inter';x.textAlign='left';x.fillText('tg128 aggregate',p.l+18,ly+10);
+x.fillStyle='#00e5ff';x.fillRect(p.l+160,ly,12,12);x.fillStyle='#f0f0f5';x.fillText('random aggregate',p.l+178,ly+10);
 
+// Y axis label
+x.save();x.fillStyle='#7a7a9a';x.font='10px JetBrains Mono';x.translate(12,p.t+ph/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText('aggregate tok/s',0,0);x.restore();
+})();
+
+// ─── CHART 2: Depth sweep ─────────────────────────────────
+(function(){
+const c=document.getElementById('c2'),x=c.getContext('2d');
+const dpr=window.devicePixelRatio||1,r=c.getBoundingClientRect();
+c.width=r.width*dpr;c.height=r.height*dpr;x.scale(dpr,dpr);
+const W=r.width,H=r.height,p={l:70,r:20,t:30,b:60},pw=W-p.l-p.r,ph=H-p.t-p.b;
+
+x.fillStyle='#050510';x.fillRect(0,0,W,H);
+
+const depths=[0,4096,8192,16384];
+const labels=['d0','d4096','d8192','d16384'];
+const tg=[15.33,15.18,15.49,14.93];
+const pp=[1008,1370,1372,1281];
+
+const maxPP=1600,maxTG=20;
+const step=pw/(depths.length-1);
+
+// Grid
+x.strokeStyle='rgba(255,255,255,.06)';x.lineWidth=1;
+for(let i=0;i<=4;i++){const y=p.t+ph-ph*(i/4);x.beginPath();x.moveTo(p.l,y);x.lineTo(W-p.r,y);x.stroke();
+x.fillStyle='#4a4a6a';x.font='10px JetBrains Mono';x.textAlign='right';x.fillText(Math.round(maxPP*i/4),p.l-8,y+3);}
+
+// PP line
+x.strokeStyle='#00e5ff';x.lineWidth=3;x.beginPath();
+pp.forEach((v,i)=>{const px2=p.l+i*step,py=p.t+ph-(v/maxPP)*ph;i?x.lineTo(px2,py):x.moveTo(px2,py);});
+x.stroke();
+pp.forEach((v,i)=>{const px2=p.l+i*step,py=p.t+ph-(v/maxPP)*ph;
+x.fillStyle='#00e5ff';x.beginPath();x.arc(px2,py,5,0,Math.PI*2);x.fill();
+x.fillStyle='#f0f0f5';x.font='bold 11px JetBrains Mono';x.textAlign='center';x.fillText(v.toLocaleString(),px2,py-10);});
+
+// TG line (scaled to right axis)
+x.strokeStyle='#00ff88';x.lineWidth=3;x.beginPath();
+tg.forEach((v,i)=>{const px2=p.l+i*step,py=p.t+ph-(v/maxTG)*ph;i?x.lineTo(px2,py):x.moveTo(px2,py);});
+x.stroke();
+tg.forEach((v,i)=>{const px2=p.l+i*step,py=p.t+ph-(v/maxTG)*ph;
+x.fillStyle='#00ff88';x.beginPath();x.arc(px2,py,5,0,Math.PI*2);x.fill();
+x.fillStyle='#f0f0f5';x.font='bold 11px JetBrains Mono';x.textAlign='center';x.fillText(v.toFixed(2),px2,py-10);});
+
+// X labels
+depths.forEach((d,i)=>{x.fillStyle='#7a7a9a';x.font='11px JetBrains Mono';x.textAlign='center';x.fillText(labels[i],p.l+i*step,p.t+ph+16);});
+
+// Right axis for TG
+x.fillStyle='#4a4a6a';x.font='10px JetBrains Mono';x.textAlign='left';
+for(let i=0;i<=4;i++){const y=p.t+ph-ph*(i/4);x.fillText((maxTG*i/4).toFixed(1),W-p.r+4,y+3);}
+
+// Legend
+x.fillStyle='#00e5ff';x.fillRect(p.l,12,12,12);x.fillStyle='#f0f0f5';x.font='11px Inter';x.textAlign='left';x.fillText('pp2048 (left axis)',p.l+18,22);
+x.fillStyle='#00ff88';x.fillRect(p.l+180,12,12,12);x.fillStyle='#f0f0f5';x.fillText('tg128 (right axis)',p.l+198,22);
+
+// Y labels
+x.save();x.fillStyle='#00e5ff';x.font='10px JetBrains Mono';x.translate(12,p.t+ph/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText('prefill tok/s',0,0);x.restore();
+})();
+</script>
 </body>
 </html>

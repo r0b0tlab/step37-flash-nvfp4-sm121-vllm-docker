@@ -1,0 +1,10 @@
+| model                                                           |            test |              t/s |     peak t/s |          ttfr (ms) |       est_ppt (ms) |      e2e_ttft (ms) |
+|:----------------------------------------------------------------|----------------:|-----------------:|-------------:|-------------------:|-------------------:|-------------------:|
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |          pp2048 | 1008.21 ± 144.14 |              |   2081.70 ± 273.62 |   2078.00 ± 273.62 |   2081.70 ± 273.62 |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |           tg128 |     15.33 ± 1.10 | 17.00 ± 0.00 |                    |                    |                    |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |  pp2048 @ d4096 |  1369.90 ± 24.03 |              |    4495.46 ± 79.66 |    4491.76 ± 79.66 |    4495.46 ± 79.66 |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |   tg128 @ d4096 |     15.18 ± 1.58 | 17.00 ± 0.00 |                    |                    |                    |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |  pp2048 @ d8192 |  1372.40 ± 74.42 |              |   7494.13 ± 423.18 |   7490.43 ± 423.18 |   7494.13 ± 423.18 |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |   tg128 @ d8192 |     15.49 ± 1.10 | 17.00 ± 0.00 |                    |                    |                    |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 | pp2048 @ d16384 | 1281.47 ± 168.06 |              | 14670.63 ± 2117.95 | 14666.93 ± 2117.95 | 14671.97 ± 2118.06 |
+| /home/r0b0tdgx/models/llm/nvfp4/stepfun-ai/Step-3.7-Flash-NVFP4 |  tg128 @ d16384 |     14.93 ± 1.42 | 17.00 ± 0.00 |                    |                    |                    |
