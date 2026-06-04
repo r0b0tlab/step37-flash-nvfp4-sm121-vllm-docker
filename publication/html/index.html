@@ -101,13 +101,13 @@ footer a{color:var(--cyan);text-decoration:none}
   <div class="metrics">
     <div class="metric">
       <div class="label">Decode (tg128)</div>
-      <div class="value">14.02<span class="unit">tok/s</span></div>
-      <div class="note">1024 input &rarr; 128 output, c=1</div>
+      <div class="value">16.49<span class="unit">tok/s</span></div>
+      <div class="note">llama-benchy, peak 18.00</div>
     </div>
     <div class="metric cyan">
-      <div class="label">Generation (c=1)</div>
-      <div class="value">13.2<span class="unit">tok/s</span></div>
-      <div class="note">2048 input &rarr; 1024 output</div>
+      <div class="label">Prefill (pp2048)</div>
+      <div class="value">1093<span class="unit">tok/s</span></div>
+      <div class="note">llama-benchy, &plusmn;94.73</div>
     </div>
     <div class="metric magenta">
       <div class="label">Aggregate (c=2)</div>
@@ -120,6 +120,15 @@ footer a{color:var(--cyan);text-decoration:none}
       <div class="note">58&deg;C, 92% utilization</div>
     </div>
   </div>
+  <table style="margin-top:1rem">
+    <tr><th>Benchmark</th><th>tok/s</th><th>Method</th></tr>
+    <tr><td>llama-benchy tg128</td><td class="pass">16.49 &plusmn; 0.28</td><td>--pp 2048 --tg 128 --runs 3</td></tr>
+    <tr><td>llama-benchy pp2048</td><td class="pass">1093.06 &plusmn; 94.73</td><td>--pp 2048 --tg 128 --runs 3</td></tr>
+    <tr><td>Custom tg128 c1</td><td>14.02</td><td>/v1/completions, 1024&rarr;128, 3 runs</td></tr>
+    <tr><td>Custom random c1</td><td>13.20</td><td>/v1/completions, 2048&rarr;1024, 3 runs</td></tr>
+    <tr><td>Custom random c2</td><td>27.01</td><td>2 concurrent, 2048&rarr;1024, 3 runs</td></tr>
+    <tr><td>API latency</td><td>2.12 ms</td><td>llama-benchy</td></tr>
+  </table>
 </section>
 
 <!-- Model Profile -->
@@ -242,11 +251,14 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   --kv-cache-dtype fp8 \
   --disable-cascade-attn \
   --gpu-memory-utilization 0.70 \
-  --max-model-len 8192 \
+  --max-model-len 32768 \
+  --max-num-batched-tokens 32768 \
+  --max-num-seqs 4 \
   --reasoning-parser step3p5 \
   --tool-call-parser step3p5 \
   --enable-auto-tool-choice \
   --enforce-eager</pre>
+  <p style="color:var(--dim);font-size:.78rem;margin-top:.5rem">Network: NCCL_SOCKET_IFNAME=enp1s0f0np0, GLOO_SOCKET_IFNAME=enp1s0f0np0, TP_SOCKET_IFNAME=enp1s0f0np0</p>
 </section>
 
 <!-- Hardware -->
@@ -261,23 +273,54 @@ Worker_TP0: Using 'VLLM_CUTLASS' NvFp4 MoE backend
   <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">Interconnect: QSFP 200GbE, MTU 9000, RoCE ~196 Gbps, < 0.6ms RTT</p>
 </section>
 
+<!-- Context & CUDA Graphs -->
+<section class="fade-up">
+  <div class="section-label">Scaling</div>
+  <h2>Context Length &amp; CUDA Graphs</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+    <div class="card">
+      <h3 style="color:var(--cyan)">Context Length</h3>
+      <table>
+        <tr><th>max_model_len</th><th>Status</th></tr>
+        <tr><td>8,192</td><td class="pass">Verified</td></tr>
+        <tr><td>32,768</td><td class="pass">Verified (recommended)</td></tr>
+        <tr><td>65,536</td><td class="fail">OOM at 0.70 GPU util</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--magenta)">CUDA Graphs</h3>
+      <table>
+        <tr><th>Config</th><th>Status</th></tr>
+        <tr><td>32K eager</td><td class="pass">Verified</td></tr>
+        <tr><td>32K cuGraphs</td><td class="pass">Verified</td></tr>
+        <tr><td>64K cuGraphs</td><td class="fail">SHM deadlock</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
 <!-- Limitations -->
 <section class="fade-up">
   <div class="section-label">Known Limitations</div>
   <h2>Caveats</h2>
   <ul style="color:var(--muted);font-size:.9rem;padding-left:1.5rem;list-style:disc">
-    <li>nsys cannot trace Ray worker GPU kernels across nodes (distributed TP limitation)</li>
-    <li><code>--enforce-eager</code> required (Triton JIT + CUDA graphs cause RPC timeout on first run)</li>
-    <li>max_model_len=8192 (conservative; model supports 256K)</li>
-    <li>Upstream recommends TP=4+EP; TP=2 is our validated target</li>
-    <li>Vision test uses synthetic base64 PNG</li>
+    <li>CUDA graphs at 64K+ context cause SHM broadcast deadlock on cross-node TP=2</li>
+    <li><code>--enforce-eager</code> required on first run (Triton JIT + CUDA graphs cause RPC timeout)</li>
+    <li>64K context OOMs at 0.70 GPU util; needs 0.85+ or reduced max_num_seqs</li>
+    <li>Upstream recommends TP=4+EP; TP=2 is our validated target for dual GB10</li>
     <li>PYNCCL all-reduce (SM121 NCCL_SYMM_MEM unavailable)</li>
+    <li>nsys cannot trace Ray worker GPU kernels across distributed nodes</li>
   </ul>
 </section>
 
 <!-- Footer -->
 <footer>
   <p>Published by <a href="https://github.com/r0b0tlab">r0b0tlab</a> &middot; <a href="https://x.com/mr_r0b0t">@mr-r0b0t</a></p>
+  <p style="margin-top:.5rem">
+    <a href="https://github.com/r0b0tlab/step37-flash-nvfp4-sm121-vllm-docker">GitHub</a> &middot;
+    <a href="https://ghcr.io/r0b0tlab/vllm-step37-flash-nvfp4-sm121">Docker</a> &middot;
+    <a href="https://huggingface.co/stepfun-ai/Step-3.7-Flash-NVFP4">Model</a>
+  </p>
   <p style="margin-top:.5rem">Model: stepfun-ai/Step-3.7-Flash-NVFP4 &middot; vLLM 0.1.dev16944 &middot; 2026-06-04</p>
 </footer>
 
