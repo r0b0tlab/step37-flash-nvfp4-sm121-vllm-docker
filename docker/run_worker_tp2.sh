@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 . docker/ray_cluster.env
 
 REMOTE=${REMOTE:-gn100-89ac}
-IMAGE=${IMAGE:-step37-vllm-ray:cu130-v0220-arm64}
+IMAGE=step37-stepfun-ray:cu130-v0221-arm64
 CONTAINER=${CONTAINER:-step37-vllm-worker}
 
 echo "=== Step3.7 NVFP4 Ray worker start ($REMOTE) ==="

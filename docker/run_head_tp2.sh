@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 . docker/ray_cluster.env
 
-IMAGE=${IMAGE:-step37-vllm-ray:cu130-v0220-arm64}
+IMAGE=step37-stepfun-ray:cu130-v0221-arm64
 CONTAINER=${CONTAINER:-step37-vllm}
 PY=${PY:-python}
 
